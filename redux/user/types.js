@@ -1,0 +1,4 @@
+export const ActionTypes = {
+  TOGGLE_HAS_NOTY: "TOGGLE_HAS_NOTY",
+  SET_CURRENT_USER: "SET_CURRENT_USER",
+};

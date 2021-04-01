@@ -1,0 +1,6 @@
+<svg id="scann" xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <path id="Path_215" data-name="Path 215" d="M482,482H352v30H512V352H482Z" fill="#c0d4db"/>
+  <path id="Path_216" data-name="Path 216" d="M30,30H160V0H0V160H30Z" fill="#c0d4db"/>
+  <path id="Path_217" data-name="Path 217" d="M352,0V30H482V160h30V0Z" fill="#c0d4db"/>
+  <path id="Path_218" data-name="Path 218" d="M30,352H0V512H160V482H30Z" fill="#c0d4db"/>
+</svg>
