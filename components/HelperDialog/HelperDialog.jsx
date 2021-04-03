@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, Text, TouchableOpacity, View } from "react-native";
+import { cxlxrs } from "../../constants/Colors";
 import { styles } from "./styles";
 
 const HelperDialog = ({
@@ -38,7 +39,7 @@ const HelperDialog = ({
           style={{
             paddingVertical: 5,
             paddingHorizontal: 10,
-            backgroundColor: "#ffffff",
+            backgroundColor: cxlxrs.white,
             width: "90%",
             borderRadius: 10,
             // elevation: 4,

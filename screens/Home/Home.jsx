@@ -17,15 +17,40 @@ import { useDispatch, useSelector } from "react-redux";
 import Graph from "../../components/Graph/Graph";
 import OverviewBox from "../../components/OverviewBox/OverviewBox";
 import { cxlxrs } from "../../constants/Colors";
+import { firestore } from "../../firebase/config";
 import { styles } from "./styles";
 
 const Home = () => {
   const user = useSelector(({ user }) => user.currentUser);
   const [isTipHidden, hideTip] = useState(false);
   const [filter, setFilter] = useState("thisWeek");
+  const [productCount, setProductCount] = useState("0");
+  const [cashierCount, setCashierCount] = useState("0");
+  const [revenue, setRevenue] = useState("0");
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  useEffect(() => {});
+  const productsRef = firestore
+    .collection("products")
+    .doc(user.id)
+    .collection("products");
+  const cashiersRef = firestore
+    .collection("employees")
+    .doc(user.id)
+    .collection("cashiers");
+  const statsRef = firestore.collection("stats").doc(user.id);
+  const fetchData = async () => {
+    productsRef.onSnapshot((snapShot) => setProductCount(snapShot.size));
+    cashiersRef.onSnapshot((snapShot) => setCashierCount(snapShot.size));
+    statsRef.onSnapshot((snapShot) => {
+      if (!snapShot.exists) {
+        return;
+      }
+      setRevenue(snapShot.data().revenue);
+    });
+  };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <>
@@ -65,7 +90,7 @@ const Home = () => {
         <View style={styles.overviews}>
           <OverviewBox
             label="Products"
-            count="6526"
+            count={productCount}
             onPress={() => navigation.navigate("Products")}
             icon={
               <MaterialIcons name="inventory" size={20} color={cxlxrs.white} />
@@ -75,7 +100,7 @@ const Home = () => {
           />
           <OverviewBox
             label="Cashiers"
-            count="1"
+            count={cashierCount}
             onPress={() => navigation.navigate("Cashiers")}
             icon={<FontAwesome5 name="users" size={20} color={cxlxrs.black} />}
             bgColor={cxlxrs.white}
@@ -83,7 +108,7 @@ const Home = () => {
           />
           <OverviewBox
             label="Revenue"
-            count="6526"
+            count={`₦${revenue}`}
             onPress={() => {}}
             icon={<FontAwesome5 name="coins" size={20} color={cxlxrs.white} />}
             bgColor={cxlxrs.black}

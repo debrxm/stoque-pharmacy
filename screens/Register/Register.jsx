@@ -42,8 +42,6 @@ const Register = () => {
       return;
     }
     const result = validateUser({
-      firstName: fullname.split(" ")[0],
-      lastName: fullname.split(" ")[1],
       phone,
       email,
     });

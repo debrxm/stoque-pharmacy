@@ -1,17 +1,11 @@
-import {
-  AntDesign,
-  Feather,
-  FontAwesome,
-  FontAwesome5,
-  Ionicons,
-} from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { View, Image, Share, Text, TouchableOpacity } from "react-native";
 import HelperDialog from "../../components/HelperDialog/HelperDialog";
 import { styles } from "./styles";
-import { colors, cxlxrs } from "../../constants/Colors";
+import { cxlxrs } from "../../constants/Colors";
 import SettingsItemWrapper from "../../components/SettingsItemWrapper/SettingsItemWrapper";
 import { setCurrentUser } from "../../redux/user/actions";
 import { auth } from "../../firebase/config";

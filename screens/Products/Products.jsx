@@ -1,21 +1,110 @@
-import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Feather,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
-import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  View,
+  Text,
+  TouchableOpacity,
+  RefreshControl,
+} from "react-native";
+import { useSelector } from "react-redux";
 import AppButton from "../../components/AppButton/AppButton";
+import HelperDialog from "../../components/HelperDialog/HelperDialog";
+import ProductPreview from "../../components/ProductPreview/ProductPreview";
 import Scanner from "../../components/Scanner/Scanner";
 import { cxlxrs } from "../../constants/Colors";
+import { firestore } from "../../firebase/config";
 
 import { styles } from "./styles";
 
 const Products = () => {
+  let onEndReachedCalledDuringMomentum = false;
+  const user = useSelector(({ user }) => user.currentUser);
   const navigation = useNavigation();
-  const [hasProduct] = useState(false);
+  const [hasProduct, setHasProduct] = useState(false);
   const [scannerVisible, setScannerVisible] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMoreLoading, setIsMoreLoading] = useState(false);
+  const [lastDoc, setLastDoc] = useState(null);
+  const [products, setProducts] = useState([]);
+  const productsRef = firestore
+    .collection("products")
+    .doc(user.id)
+    .collection("products");
+  const onRefresh = () => {
+    setTimeout(() => {
+      getProducts();
+    }, 1000);
+  };
+  const getProducts = async () => {
+    setIsLoading(true);
 
-  useEffect(() => {}, []);
+    const snapshot = await productsRef
+      .orderBy("created_at")
+      .limit(15)
+      .get();
 
+    if (!snapshot.empty) {
+      setHasProduct(true);
+      let newProducts = [];
+
+      setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+
+      for (let i = 0; i < snapshot.docs.length; i++) {
+        newProducts.push(snapshot.docs[i].data());
+      }
+
+      setProducts(newProducts);
+    } else {
+      setLastDoc(null);
+    }
+
+    setIsLoading(false);
+  };
+
+  const getMore = async () => {
+    if (lastDoc) {
+      setIsMoreLoading(true);
+
+      setTimeout(async () => {
+        let snapshot = await productsRef
+          .orderBy("created_at")
+          .startAfter(lastDoc.data().id)
+          .limit(15)
+          .get();
+
+        if (!snapshot.empty) {
+          let newProducts = products;
+
+          setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+
+          for (let i = 0; i < snapshot.docs.length; i++) {
+            newProducts.push(snapshot.docs[i].data());
+          }
+
+          setProducts(newProducts);
+          if (snapshot.docs.length < 15) setLastDoc(null);
+        } else {
+          setLastDoc(null);
+        }
+
+        setIsMoreLoading(false);
+      }, 1000);
+    }
+
+    onEndReachedCalledDuringMomentum = true;
+  };
+  useEffect(() => {
+    getProducts();
+  }, []);
   return (
     <>
       <View style={styles.header}>
@@ -56,15 +145,18 @@ const Products = () => {
         setScannerVisible={setScannerVisible}
         quickScan
       />
-      <ScrollView
-        contentContainerStyle={styles.contentContainer}
-        style={styles.container}
-      >
-        {hasProduct ? (
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color={cxlxrs.black}
+          style={{ marginBottom: 10 }}
+        />
+      ) : hasProduct ? (
+        <>
           <View style={styles.overview}>
             <View style={styles.overviewMainTextsContainer}>
               <Text style={styles.overviewMainTextLabel}>Total</Text>
-              <Text style={styles.overviewMainTextBold}>{`0`}</Text>
+              <Text style={styles.overviewMainTextBold}>{products.length}</Text>
             </View>
             <View style={styles.navButtons}>
               <AppButton
@@ -97,40 +189,125 @@ const Products = () => {
               />
             </View>
           </View>
-        ) : (
-          <View style={styles.noProduct}>
-            <Text style={[styles.noDataText, styles.noProductText]}>
-              You currently have no product.
-            </Text>
-            <AppButton
-              onPress={() => navigation.navigate("AddProduct")}
-              title="Add Product"
-              customStyle={{
-                backgroundColor: cxlxrs.white,
-                borderRadius: 30,
-                height: 35,
-                width: "40%",
+          <View style={styles.listContainer}>
+            <FlatList
+              data={products}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => <ProductPreview data={item} />}
+              ListFooterComponent={
+                <RenderFooter isMoreLoading={isMoreLoading} />
+              }
+              refreshControl={
+                <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+              }
+              initialNumToRender={3}
+              onEndReachedThreshold={0.1}
+              onMomentumScrollBegin={() => {
+                onEndReachedCalledDuringMomentum = false;
               }}
-              textStyle={{
-                fontFamily: "FiraCode-Regular",
-                textTransform: "capitalize",
-                fontWeight: "400",
-                fontSize: 12,
-                color: cxlxrs.black,
+              onEndReached={() => {
+                if (!onEndReachedCalledDuringMomentum && !isMoreLoading) {
+                  getMore();
+                }
               }}
             />
           </View>
-        )}
-      </ScrollView>
+        </>
+      ) : (
+        <View style={styles.noProduct}>
+          <Text style={[styles.noDataText, styles.noProductText]}>
+            You currently have no product.
+          </Text>
+          <AppButton
+            onPress={() => navigation.navigate("AddProduct")}
+            title="Add Product"
+            customStyle={{
+              backgroundColor: cxlxrs.white,
+              borderRadius: 30,
+              height: 35,
+              width: "40%",
+            }}
+            textStyle={{
+              fontFamily: "FiraCode-Regular",
+              textTransform: "capitalize",
+              fontWeight: "400",
+              fontSize: 12,
+              color: cxlxrs.black,
+            }}
+          />
+        </View>
+      )}
       <View style={{ ...styles.buttonContainer }}>
+        <TouchableOpacity onPress={() => navigation.navigate("AddCategory")}>
+          <View
+            style={[
+              styles.button,
+              { backgroundColor: "#ffffff", marginBottom: 10 },
+            ]}
+          >
+            <MaterialIcons name="category" size={24} color={cxlxrs.black} />
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("AddProduct")}>
           <View style={styles.button}>
             <Ionicons name="add" size={24} color={cxlxrs.white} />
           </View>
         </TouchableOpacity>
       </View>
+      <HelperDialog
+        visible={dialogVisible}
+        setDialogVisible={setDialogVisible}
+        noTitle
+      >
+        <AppButton
+          onPress={() => navigation.navigate("AddCategory")}
+          title="Add Category"
+          customStyle={{
+            backgroundColor: "#ffffff",
+            borderRadius: 30,
+            height: 35,
+            width: "90%",
+          }}
+          textStyle={{
+            fontFamily: "FiraCode-Regular",
+            textTransform: "capitalize",
+            fontWeight: "400",
+            fontSize: 12,
+            color: cxlxrs.black,
+          }}
+        />
+        <AppButton
+          onPress={() => navigation.navigate("AddProduct")}
+          title="Add Product"
+          customStyle={{
+            backgroundColor: cxlxrs.black,
+            borderRadius: 30,
+            height: 35,
+            width: "y0%",
+          }}
+          textStyle={{
+            fontFamily: "FiraCode-Regular",
+            textTransform: "capitalize",
+            fontWeight: "400",
+            fontSize: 12,
+            color: cxlxrs.white,
+          }}
+        />
+      </HelperDialog>
     </>
   );
 };
+
+function RenderFooter({ isMoreLoading }) {
+  if (!isMoreLoading) return true;
+
+  return (
+    <ActivityIndicator
+      size="large"
+      color={cxlxrs.black}
+      style={{ marginBottom: 10 }}
+    />
+  );
+}
 
 export default Products;

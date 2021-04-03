@@ -18,7 +18,9 @@ import About from "../screens/About/About";
 import Cashiers from "../screens/Cashiers/Cashiers";
 import { Text } from "../components/Themed/Themed";
 import Products from "../screens/Products/Products";
+import AddCategory from "../screens/AddCategory/AddCategory";
 import AddProduct from "../screens/AddProduct/AddProduct";
+import ProductView from "../screens/ProductView/ProductView";
 import AddCashier from "../screens/AddCashier/AddCashier";
 import Reports from "../screens/Reports/Reports";
 
@@ -45,7 +47,16 @@ export default function BottomTabNavigator() {
       case "AddCashier":
         return false;
         break;
+      // case "Products":
+      //   return false;
+      //   break;
+      case "AddCategory":
+        return false;
+        break;
       case "AddProduct":
+        return false;
+        break;
+      case "ProductView":
         return false;
         break;
       case "About":
@@ -213,19 +224,26 @@ function ProductsScreenNavigator() {
         }}
       />
       <ScreenStack.Screen
+        name="AddCategory"
+        component={AddCategory}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ScreenStack.Screen
         name="AddProduct"
         component={AddProduct}
         options={{
           headerShown: false,
         }}
       />
-      {/* <ScreenStack.Screen
+      <ScreenStack.Screen
         name="ProductView"
         component={ProductView}
         options={{
           headerShown: false,
         }}
-      /> */}
+      />
     </ScreenStack.Navigator>
   );
 }

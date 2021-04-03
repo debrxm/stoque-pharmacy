@@ -1,13 +1,14 @@
 import { Dimensions, StyleSheet } from "react-native";
+import { cxlxrs } from "../../constants/Colors";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: cxlxrs.white,
   },
   modal: {
     width: "100%",
     height: Dimensions.get("screen").height,
-    backgroundColor: "white",
+    backgroundColor: cxlxrs.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingTop: 30,
@@ -21,7 +22,7 @@ export const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 10,
     minHeight: 80,
-    backgroundColor: "#ffffff",
+    backgroundColor: cxlxrs.white,
     justifyContent: "space-between",
   },
   circle: {
@@ -32,7 +33,7 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     marginLeft: 5,
     elevation: 2,
-    backgroundColor: "#ffffff",
+    backgroundColor: cxlxrs.white,
   },
   routeTitle: {
     color: "#111111",

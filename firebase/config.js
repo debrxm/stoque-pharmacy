@@ -3,14 +3,13 @@ import "firebase/firestore";
 import "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBM-3LnyzhmtIa0M7QBe_AD6zRI0-J-LHA",
-  authDomain: "stoque-e9406.firebaseapp.com",
-  databaseURL: "https://stoque-e9406-default-rtdb.firebaseio.com",
-  projectId: "stoque-e9406",
-  storageBucket: "stoque-e9406.appspot.com",
-  messagingSenderId: "527643201111",
-  appId: "1:527643201111:web:d3ffe7d74033cba91e5d12",
-  measurementId: "G-68F8L78JHN",
+  apiKey: "AIzaSyDYQozbjTxM-4mBgyTXZzs4KilYr40TeVw",
+  authDomain: "stoque-pharmacy.firebaseapp.com",
+  projectId: "stoque-pharmacy",
+  storageBucket: "stoque-pharmacy.appspot.com",
+  messagingSenderId: "297460588813",
+  appId: "1:297460588813:web:08032071f039c860811044",
+  measurementId: "G-CENSWL0JRM",
 };
 
 if (!firebase.apps.length) {

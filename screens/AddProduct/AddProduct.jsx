@@ -8,6 +8,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import RNPickerSelect from "react-native-picker-select";
 import {
+  ActivityIndicator,
   Dimensions,
   View,
   Text,
@@ -49,10 +50,6 @@ const AddProduct = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successful, setSuccessful] = useState(false);
 
-  const categoryOptions = [
-    { value: "skincare", label: "Skincare" },
-    { value: "kitchen", label: "Kitchen" },
-  ];
   const toggleDatePicker = () => {
     setDatePickerVisibility(!isDatePickerVisible);
   };
@@ -110,6 +107,11 @@ const AddProduct = () => {
     ) {
       setLoading(false);
       setErrorMessage(`All fields are required!`);
+      return;
+    }
+    if (quantity < notification) {
+      setLoading(false);
+      setErrorMessage(`Notification must be less than quantity!`);
       return;
     }
     const productRef = firestore
@@ -182,7 +184,7 @@ const AddProduct = () => {
                 borderRadius: 30,
                 justifyContent: "center",
               }}
-              customTextStyles={{ color: "#ffffff" }}
+              customTextStyles={{ color: "#ffffff", textAlign: "center" }}
             />
           ) : null}
         </View>
@@ -275,32 +277,17 @@ const AddProduct = () => {
           </View>
         </View>
         <View style={[styles.flexGrouping, { marginBottom: 30 }]}>
-          <View style={[styles.selectContainer]}>
-            <Text style={styles.label}>Category</Text>
-            <RNPickerSelect
-              onValueChange={(value) => setCategory(value)}
-              items={categoryOptions}
-              style={pickerSelectStyles}
-              useNativeAndroidPickerStyle={false}
-              Icon={() => (
-                <AntDesign
-                  name="caretdown"
-                  size={10}
-                  color="black"
-                  style={{ marginTop: 15, marginRight: 10 }}
-                />
-              )}
-            />
-          </View>
+          <CategoryContainer category={category} setCategory={setCategory} />
           <AddProductInput
             label="Notification"
             value={notification}
             onChangeText={(e) => {
               setErrorMessage("");
-              quantity * 1 > e * 1 &&
-                quantity.length >= e.length &&
-                setNotification(e * 1);
+              // quantity * 1 > e * 1 &&
+              //   quantity.length >= e.length &&
+              setNotification(e * 1);
             }}
+            maxLength={quantity && quantity}
             keyType="numeric"
             containerStyle={{ width: "35%" }}
           />
@@ -338,12 +325,20 @@ const AddProduct = () => {
             bottom: 20,
           }}
         >
-          <AppButton
-            onPress={() => !loading && checkIfProductIdExist()}
-            title="Add"
-            customStyle={styles.addBtn}
-            textStyle={styles.addBtnText}
-          />
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color={cxlxrs.black}
+              style={{ marginBottom: 10 }}
+            />
+          ) : (
+            <AppButton
+              onPress={() => !loading && checkIfProductIdExist()}
+              title="Add"
+              customStyle={styles.addBtn}
+              textStyle={styles.addBtnText}
+            />
+          )}
         </View>
       </ScrollView>
     </>
@@ -382,3 +377,41 @@ const pickerSelectStyles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+function CategoryContainer({ category, setCategory }) {
+  const user = useSelector(({ user }) => user.currentUser);
+  const [categories, setCategories] = useState([]);
+  const fetchCategories = async () => {
+    const categoryRef = firestore
+      .collection("categories")
+      .doc(user.id)
+      .collection("categories");
+    categoryRef.onSnapshot((snapShot) => {
+      const categories = [];
+      snapShot.forEach((item) => categories.push(item.data()));
+      setCategories(categories);
+    });
+  };
+  useEffect(() => {
+    fetchCategories();
+  }, [category, fetchCategories]);
+  return (
+    <View style={[styles.selectContainer]}>
+      <Text style={styles.label}>Category</Text>
+      <RNPickerSelect
+        onValueChange={(value) => setCategory(value)}
+        items={categories}
+        style={pickerSelectStyles}
+        useNativeAndroidPickerStyle={false}
+        Icon={() => (
+          <AntDesign
+            name="caretdown"
+            size={10}
+            color="black"
+            style={{ marginTop: 15, marginRight: 10 }}
+          />
+        )}
+      />
+    </View>
+  );
+}
