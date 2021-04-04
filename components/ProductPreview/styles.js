@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { cxlxrs } from "../../constants/Colors";
 export const styles = StyleSheet.create({
   productCard: {
@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     position: "relative",
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
+    marginVertical: 10,
   },
   productIconContainer: {
     backgroundColor: cxlxrs.black,
@@ -24,6 +24,7 @@ export const styles = StyleSheet.create({
   },
   cardInfo: {
     paddingLeft: 20,
+    flex: 1,
   },
   cardInfoSub: {
     flexDirection: "row",

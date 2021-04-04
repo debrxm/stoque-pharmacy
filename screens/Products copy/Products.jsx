@@ -13,8 +13,6 @@ import {
   Text,
   TouchableOpacity,
   RefreshControl,
-  ScrollView,
-  SafeAreaView,
 } from "react-native";
 import { useSelector } from "react-redux";
 import AppButton from "../../components/AppButton/AppButton";
@@ -157,52 +155,65 @@ const Products = () => {
         <>
           <View style={styles.overview}>
             <View style={styles.overviewMainTextsContainer}>
-              <View>
-                <Text style={styles.overviewMainTextLabel}>Total</Text>
-                <Text style={styles.overviewMainTextBold}>
-                  {products.length}
-                </Text>
-              </View>
-              <View>
-                <Text style={styles.overviewMainTextLabel}>Sold</Text>
-                <Text style={styles.overviewMainTextBold}>
-                  {products.length}
-                </Text>
-              </View>
+              <Text style={styles.overviewMainTextLabel}>Total</Text>
+              <Text style={styles.overviewMainTextBold}>{products.length}</Text>
             </View>
-          </View>
-          <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.listContainer}>
-              <FlatList
-                data={products}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <ProductPreview data={item} />}
-                ListFooterComponent={
-                  <RenderFooter isMoreLoading={isMoreLoading} />
-                }
-                refreshControl={
-                  <RefreshControl
-                    refreshing={isLoading}
-                    onRefresh={onRefresh}
-                  />
-                }
-                contentContainerStyle={{
-                  flexGrow: 1,
+            <View style={styles.navButtons}>
+              <AppButton
+                onPress={() => navigation.navigate("TopUp")}
+                title="All"
+                customStyle={styles.navBtn}
+                textStyle={{ ...styles.navBtnText, color: cxlxrs.black }}
+              />
+              <AppButton
+                onPress={() => navigation.navigate("Products")}
+                title="Running Low"
+                customStyle={{
+                  ...styles.navBtn,
+                  backgroundColor: cxlxrs.white,
                 }}
-                style={{ paddingBottom: 20 }}
-                initialNumToRender={15}
-                onEndReachedThreshold={0.1}
-                onMomentumScrollBegin={() => {
-                  onEndReachedCalledDuringMomentum = false;
+                textStyle={{
+                  ...styles.navBtnText,
                 }}
-                onEndReached={() => {
-                  if (!onEndReachedCalledDuringMomentum && !isMoreLoading) {
-                    getMore();
-                  }
+              />
+              <AppButton
+                onPress={() => navigation.navigate("Products")}
+                title="Sold Out"
+                customStyle={{
+                  ...styles.navBtn,
+                  backgroundColor: cxlxrs.white,
+                }}
+                textStyle={{
+                  ...styles.navBtnText,
                 }}
               />
             </View>
-          </SafeAreaView>
+          </View>
+          <View style={styles.listContainer}>
+            <FlatList
+              data={products}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => <ProductPreview data={item} />}
+              ListFooterComponent={
+                <RenderFooter isMoreLoading={isMoreLoading} />
+              }
+              refreshControl={
+                <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+              }
+              contentContainerStyle={{ flex: 1 }}
+              style={{ height: "100%" }}
+              initialNumToRender={15}
+              onEndReachedThreshold={0.1}
+              onMomentumScrollBegin={() => {
+                onEndReachedCalledDuringMomentum = false;
+              }}
+              onEndReached={() => {
+                if (!onEndReachedCalledDuringMomentum && !isMoreLoading) {
+                  getMore();
+                }
+              }}
+            />
+          </View>
         </>
       ) : (
         <View style={styles.noProduct}>

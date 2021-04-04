@@ -5,6 +5,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import {
   ScrollView,
@@ -22,10 +23,10 @@ import { styles } from "./styles";
 
 const Home = () => {
   const user = useSelector(({ user }) => user.currentUser);
-  const [isTipHidden, hideTip] = useState(false);
   const [filter, setFilter] = useState("thisWeek");
   const [productCount, setProductCount] = useState("0");
   const [cashierCount, setCashierCount] = useState("0");
+  const [latestSale, setLatestSale] = useState({});
   const [revenue, setRevenue] = useState("0");
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -38,6 +39,10 @@ const Home = () => {
     .doc(user.id)
     .collection("cashiers");
   const statsRef = firestore.collection("stats").doc(user.id);
+  const latestSalesRef = firestore
+    .collection("sales")
+    .doc(user.id)
+    .collection("sales");
   const fetchData = async () => {
     productsRef.onSnapshot((snapShot) => setProductCount(snapShot.size));
     cashiersRef.onSnapshot((snapShot) => setCashierCount(snapShot.size));
@@ -47,6 +52,12 @@ const Home = () => {
       }
       setRevenue(snapShot.data().revenue);
     });
+    latestSalesRef
+      .orderBy("created_at")
+      .limit(1)
+      .onSnapshot((snapShot) => {
+        !snapShot.empty && setLatestSale(snapShot.docs[0].data());
+      });
   };
   useEffect(() => {
     fetchData();
@@ -138,20 +149,26 @@ const Home = () => {
                 <View style={styles.transactionTexts}>
                   <View style={styles.transactionTextLeft}>
                     <Text style={styles.transactionName}>
-                      Product sold by Emily
+                      {`Product sold by ${latestSale.cashier || "Emily"}`}
                     </Text>
                     <View style={styles.transactionSubtext}>
-                      <Text style={styles.transactionTime}>10 min ago</Text>
+                      <Text style={styles.transactionTime}>
+                        {latestSale.created_at
+                          ? moment(latestSale.created_at).fromNow()
+                          : "10 min ago"}
+                      </Text>
                       <Text style={styles.transactionProductCount}>
-                        21 Products
+                        {`${latestSale.productCount || 21} Products`}
                       </Text>
                     </View>
                   </View>
                   <View style={styles.transactionTextRight}>
-                    <Text style={styles.transactionId}>10ingo</Text>
+                    <Text style={styles.transactionId}>
+                      {latestSale.id || "10ingo"}
+                    </Text>
                     <Text
                       style={styles.transactionTotalPrice}
-                    >{`₦${"32,000"}`}</Text>
+                    >{`₦${latestSale.price || "32,000"}`}</Text>
                   </View>
                 </View>
               </View>

@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     fontFamily: FontFamily.FiraMedium,
   },
   overview: {
-    // minHeight: 140,
+    minHeight: 140,
     backgroundColor: cxlxrs.white,
     justifyContent: "center",
     alignItems: "center",
@@ -33,10 +33,6 @@ export const styles = StyleSheet.create({
     paddingTop: 0,
   },
   overviewMainTextsContainer: {
-    // flex: 1,
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-around",
     alignItems: "center",
   },
   overviewMainTextLabel: {

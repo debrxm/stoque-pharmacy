@@ -28,7 +28,7 @@ const Cashiers = () => {
         ) : (
           <View style={styles.noProduct}>
             <Text style={[styles.noDataText, styles.noProductText]}>
-              You currently have no product.
+              You currently have no cashier.
             </Text>
             <AppButton
               onPress={() => navigation.navigate("AddCashier")}

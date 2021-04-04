@@ -71,7 +71,7 @@ const AddCashier = () => {
       address,
       created_at: Date.now(),
     };
-    console.log(cashierData);
+    // console.log(cashierData);s
     onCreateCashier(cashierData);
   }
   return (

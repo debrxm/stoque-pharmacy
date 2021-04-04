@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, Text, View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
+import { useSelector } from "react-redux";
 import { cxlxrs } from "../../constants/Colors";
 import { FontFamily } from "../../constants/Fonts";
+import { firestore } from "../../firebase/config";
 import StatFilterButtons from "../StatFilterButtons/StatFilterButtons";
 
 const Graph = ({ filter, setFilter, title, monthOrderCount }) => {
+  const user = useSelector(({ user }) => user.currentUser);
+  const [productSold, setProductSold] = useState(1800);
+  const statsRef = firestore.collection("stats").doc(user.id);
+  const fetchData = async () => {
+    statsRef.onSnapshot((snapShot) => {
+      if (!snapShot.exists) {
+        return;
+      }
+      setProductSold(snapShot.data().sold);
+    });
+  };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View
@@ -54,7 +70,7 @@ const Graph = ({ filter, setFilter, title, monthOrderCount }) => {
                   fontFamily: FontFamily.FiraSemiBold,
                 }}
               >
-                {"1800"}
+                {productSold}
               </Text>
             </View>
           </View>

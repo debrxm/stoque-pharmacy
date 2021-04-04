@@ -33,7 +33,13 @@ export default function ProductPreview({
             <MaterialIcons name="inventory" size={23} color={cxlxrs.white} />
           </View>
           <View style={styles.cardInfo}>
-            <Text style={styles.cardInfoName}>{product_name}</Text>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.cardInfoName}
+            >
+              {product_name}
+            </Text>
             <View style={styles.cardInfoSub}>
               <Text style={styles.cardInfoSubText}>
                 Sold: {product_sold_since_last_restock}
