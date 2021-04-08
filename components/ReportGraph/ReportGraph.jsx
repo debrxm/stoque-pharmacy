@@ -1,10 +1,29 @@
-import React from "react";
-import { Dimensions, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Dimensions, Text, View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
+import { useSelector } from "react-redux";
 import { cxlxrs } from "../../constants/Colors";
 import { FontFamily } from "../../constants/Fonts";
+import { firestore } from "../../firebase/config";
 
 const ReportGraph = () => {
+  const user = useSelector(({ user }) => user.currentUser);
+  const [productSold, setProductSold] = useState(0);
+  const [isStatsLoading, setIsStatsLoading] = useState(true);
+  const statsRef = firestore.collection("stats").doc(user.id);
+  const fetchData = async () => {
+    statsRef.onSnapshot((snapShot) => {
+      if (!snapShot.exists) {
+        setIsStatsLoading(false);
+        return;
+      }
+      setProductSold(snapShot.data().sold);
+      setIsStatsLoading(false);
+    });
+  };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
   return (
     <View style={{ alignItems: "center", width: "100%", marginVertical: 10 }}>
       <View
@@ -36,7 +55,7 @@ const ReportGraph = () => {
                 fontWeight: "600",
               }}
             >
-              Overall Sales
+              Revenue
             </Text>
             <View
               style={{
@@ -54,7 +73,15 @@ const ReportGraph = () => {
                   fontFamily: FontFamily.FiraSemiBold,
                 }}
               >
-                {`₦180,000`}
+                {isStatsLoading ? (
+                  <ActivityIndicator
+                    size="small"
+                    color={cxlxrs.white}
+                    style={{ marginBottom: 10 }}
+                  />
+                ) : (
+                  `₦${productSold}`
+                )}
               </Text>
             </View>
           </View>
@@ -64,7 +91,7 @@ const ReportGraph = () => {
             labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
             datasets: [
               {
-                data: [100, 60, 0, 0, 0, 0, 0],
+                data: [0, 0, 0, 0, 0, 0, 0],
               },
             ],
           }}

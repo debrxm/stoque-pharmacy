@@ -9,7 +9,6 @@ import { firestore } from "../../firebase/config";
 import HelperDialog from "../HelperDialog/HelperDialog";
 import { styles } from "./styles";
 import { cxlxrs } from "../../constants/Colors";
-import { MaterialIcons } from "@expo/vector-icons";
 import AppButton from "../AppButton/AppButton";
 const Scanner = ({
   setBarcode,

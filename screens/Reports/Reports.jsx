@@ -7,18 +7,34 @@ import ReportGraph from "../../components/ReportGraph/ReportGraph";
 
 import { styles } from "./styles";
 import { cxlxrs } from "../../constants/Colors";
+import { firestore } from "../../firebase/config";
+import { useSelector } from "react-redux";
 
 const Reports = () => {
+  const user = useSelector(({ user }) => user.currentUser);
   const navigation = useNavigation();
   const [date, setDate] = useState(Date.now().toString());
+  const [isReportLoading, setIsReportLoading] = useState(true);
+  const [hasData, setHasData] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-  useEffect(() => {}, []);
+  const statsRef = firestore.collection("stats").doc(user.id);
+  const fetchData = async () => {
+    statsRef.onSnapshot((snapShot) => {
+      if (!snapShot.exists) {
+        setIsReportLoading(false);
+        return;
+      }
+      setProductSold(snapShot.data().sold);
+      setIsReportLoading(false);
+    });
+  };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
   const toggleDatePicker = () => {
     setDatePickerVisibility(!isDatePickerVisible);
   };
   const handleConfirmDate = (date) => {
-    console.log(date);
     const timeString = new Date(date).toISOString();
     const year = timeString.getFullYear();
     const month = timeString.getMonth();
@@ -55,15 +71,27 @@ const Reports = () => {
         <View style={styles.recentReports}>
           <Text style={styles.sectionLabel}>Latest Reports</Text>
 
-          <TouchableWithoutFeedback>
-            <View style={styles.recentReportPreview}>
-              <View style={styles.left}>
-                <Text style={styles.reportDate}>Yesterday</Text>
-                <Text style={styles.itemSold}>{40} product sold</Text>
+          {hasData ? (
+            <TouchableWithoutFeedback>
+              <View style={styles.recentReportPreview}>
+                <View style={styles.left}>
+                  <Text style={styles.reportDate}>Yesterday</Text>
+                  <Text style={styles.itemSold}>{40} product sold</Text>
+                </View>
+                <Text style={styles.income}>{`₦40,000`}</Text>
               </View>
-              <Text style={styles.income}>{`₦40,000`}</Text>
+            </TouchableWithoutFeedback>
+          ) : (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 100,
+              }}
+            >
+              <Text>No Data</Text>
             </View>
-          </TouchableWithoutFeedback>
+          )}
         </View>
       </ScrollView>
       <View style={{ ...styles.buttonContainer }}>

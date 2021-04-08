@@ -7,7 +7,12 @@ import { styles } from "./styles";
 
 export default function ProductPreview({
   data,
-  data: { product_name, product_sold_since_last_restock, status, quantity },
+  data: {
+    product_name,
+    product_sold_since_last_restock,
+    quantity,
+    notification,
+  },
   customStyles,
 }) {
   const navigation = useNavigation();
@@ -24,7 +29,11 @@ export default function ProductPreview({
               styles.productIconContainer,
               {
                 borderColor:
-                  status === "In Stock" ? cxlxrs.success : cxlxrs.textColor,
+                  notification < quantity
+                    ? cxlxrs.success
+                    : quantity === 0
+                    ? cxlxrs.danger
+                    : cxlxrs.warn,
                 // backgroundColor:
                 //   status === "In Stock" ? cxlxrs.success : cxlxrs.textColor,
               },
@@ -45,7 +54,11 @@ export default function ProductPreview({
                 Sold: {product_sold_since_last_restock}
               </Text>
               <Text style={styles.cardInfoSubText}>
-                {status === "In Stock" ? `In Stock: ${quantity}` : `Sold Out`}
+                {notification < quantity
+                  ? `In Stock: ${quantity}`
+                  : quantity === 0
+                  ? `Sold Out`
+                  : `Running Low`}
               </Text>
             </View>
           </View>

@@ -66,6 +66,7 @@ const AddProduct = () => {
   }, [price, cost, quantity]);
 
   useEffect(() => {
+    console.log("Rerendering");
     refactorCode();
   }, [price, cost, quantity, refactorCode]);
   const onSuccessful = useCallback(() => {
@@ -146,8 +147,11 @@ const AddProduct = () => {
       product_sold_since_last_restock: 0,
       archived: false,
       status: "In Stock",
-      expireDate,
+      query: productName.toLowerCase(),
     };
+    if (expireDate !== "") {
+      productData["expireDate"] = expireDate;
+    }
     // console.log(productData);
     onCreateProduct(productData);
   }
@@ -283,8 +287,6 @@ const AddProduct = () => {
             value={notification}
             onChangeText={(e) => {
               setErrorMessage("");
-              // quantity * 1 > e * 1 &&
-              //   quantity.length >= e.length &&
               setNotification(e * 1);
             }}
             maxLength={quantity && quantity}
@@ -394,7 +396,7 @@ function CategoryContainer({ category, setCategory }) {
   };
   useEffect(() => {
     fetchCategories();
-  }, [category, fetchCategories]);
+  }, [category]);
   return (
     <View style={[styles.selectContainer]}>
       <Text style={styles.label}>Category</Text>

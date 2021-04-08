@@ -8,6 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -28,6 +29,10 @@ const Home = () => {
   const [cashierCount, setCashierCount] = useState("0");
   const [latestSale, setLatestSale] = useState({});
   const [revenue, setRevenue] = useState("0");
+  const [isTransactionLoading, setIsTransactionLoading] = useState(true);
+  const [isProductLoading, setIsProductLoading] = useState(true);
+  const [isCashierLoading, setIsCashierLoading] = useState(true);
+  const [isStatsLoading, setIsStatsLoading] = useState(true);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const productsRef = firestore
@@ -44,19 +49,34 @@ const Home = () => {
     .doc(user.id)
     .collection("sales");
   const fetchData = async () => {
-    productsRef.onSnapshot((snapShot) => setProductCount(snapShot.size));
-    cashiersRef.onSnapshot((snapShot) => setCashierCount(snapShot.size));
+    productsRef.onSnapshot((snapShot) => {
+      setProductCount(snapShot.size);
+      setIsProductLoading(false);
+    });
+
+    cashiersRef.onSnapshot((snapShot) => {
+      setCashierCount(snapShot.size);
+      setIsCashierLoading(false);
+    });
+
     statsRef.onSnapshot((snapShot) => {
       if (!snapShot.exists) {
+        setIsStatsLoading(false);
         return;
       }
       setRevenue(snapShot.data().revenue);
+      setIsStatsLoading(false);
     });
     latestSalesRef
       .orderBy("created_at")
       .limit(1)
       .onSnapshot((snapShot) => {
-        !snapShot.empty && setLatestSale(snapShot.docs[0].data());
+        if (!snapShot.empty) {
+          setLatestSale(snapShot.docs[0].data());
+          setIsTransactionLoading(false);
+          return;
+        }
+        setIsTransactionLoading(false);
       });
   };
   useEffect(() => {
@@ -101,7 +121,17 @@ const Home = () => {
         <View style={styles.overviews}>
           <OverviewBox
             label="Products"
-            count={productCount}
+            count={
+              isProductLoading ? (
+                <ActivityIndicator
+                  size="small"
+                  color={cxlxrs.white}
+                  style={{ marginBottom: 10 }}
+                />
+              ) : (
+                productCount
+              )
+            }
             onPress={() => navigation.navigate("Products")}
             icon={
               <MaterialIcons name="inventory" size={20} color={cxlxrs.white} />
@@ -111,7 +141,17 @@ const Home = () => {
           />
           <OverviewBox
             label="Cashiers"
-            count={cashierCount}
+            count={
+              isCashierLoading ? (
+                <ActivityIndicator
+                  size="small"
+                  color={cxlxrs.black}
+                  style={{ marginBottom: 10 }}
+                />
+              ) : (
+                cashierCount
+              )
+            }
             onPress={() => navigation.navigate("Cashiers")}
             icon={<FontAwesome5 name="users" size={20} color={cxlxrs.black} />}
             bgColor={cxlxrs.white}
@@ -119,7 +159,17 @@ const Home = () => {
           />
           <OverviewBox
             label="Revenue"
-            count={`₦${revenue}`}
+            count={
+              isStatsLoading ? (
+                <ActivityIndicator
+                  size="small"
+                  color={cxlxrs.white}
+                  style={{ marginBottom: 10 }}
+                />
+              ) : (
+                `₦${revenue}`
+              )
+            }
             onPress={() => {}}
             icon={<FontAwesome5 name="coins" size={20} color={cxlxrs.white} />}
             bgColor={cxlxrs.black}
@@ -143,36 +193,44 @@ const Home = () => {
             >
               <Text style={styles.sectionTitle}>Latest Transaction</Text>
             </View>
-            <TouchableWithoutFeedback>
-              <View style={styles.transaction}>
-                <View style={styles.transactionIcon}></View>
-                <View style={styles.transactionTexts}>
-                  <View style={styles.transactionTextLeft}>
-                    <Text style={styles.transactionName}>
-                      {`Product sold by ${latestSale.cashier || "Emily"}`}
-                    </Text>
-                    <View style={styles.transactionSubtext}>
-                      <Text style={styles.transactionTime}>
-                        {latestSale.created_at
-                          ? moment(latestSale.created_at).fromNow()
-                          : "10 min ago"}
+            {isTransactionLoading ? (
+              <ActivityIndicator
+                size="large"
+                color={cxlxrs.black}
+                style={{ marginBottom: 10 }}
+              />
+            ) : (
+              <TouchableWithoutFeedback>
+                <View style={styles.transaction}>
+                  <View style={styles.transactionIcon}></View>
+                  <View style={styles.transactionTexts}>
+                    <View style={styles.transactionTextLeft}>
+                      <Text style={styles.transactionName}>
+                        {`Product sold by ${latestSale.cashier || "Emily"}`}
                       </Text>
-                      <Text style={styles.transactionProductCount}>
-                        {`${latestSale.productCount || 21} Products`}
+                      <View style={styles.transactionSubtext}>
+                        <Text style={styles.transactionTime}>
+                          {latestSale.created_at
+                            ? moment(latestSale.created_at).fromNow()
+                            : "10 min ago"}
+                        </Text>
+                        <Text style={styles.transactionProductCount}>
+                          {`${latestSale.quantity || 21} Products`}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.transactionTextRight}>
+                      <Text style={styles.transactionId}>
+                        {latestSale.id || "10ingo"}
                       </Text>
+                      <Text
+                        style={styles.transactionTotalPrice}
+                      >{`₦${latestSale.price || "32,000"}`}</Text>
                     </View>
                   </View>
-                  <View style={styles.transactionTextRight}>
-                    <Text style={styles.transactionId}>
-                      {latestSale.id || "10ingo"}
-                    </Text>
-                    <Text
-                      style={styles.transactionTotalPrice}
-                    >{`₦${latestSale.price || "32,000"}`}</Text>
-                  </View>
                 </View>
-              </View>
-            </TouchableWithoutFeedback>
+              </TouchableWithoutFeedback>
+            )}
           </View>
         </ScrollView>
       </View>
