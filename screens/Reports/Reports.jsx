@@ -13,19 +13,18 @@ import { useSelector } from "react-redux";
 const Reports = () => {
   const user = useSelector(({ user }) => user.currentUser);
   const navigation = useNavigation();
-  const [date, setDate] = useState(Date.now().toString());
-  const [isReportLoading, setIsReportLoading] = useState(true);
   const [hasData, setHasData] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [reportViewVisible, setReportViewVisible] = useState(false);
   const statsRef = firestore.collection("stats").doc(user.id);
   const fetchData = async () => {
     statsRef.onSnapshot((snapShot) => {
       if (!snapShot.exists) {
-        setIsReportLoading(false);
+        // setIsReportLoading(false);
         return;
       }
-      setProductSold(snapShot.data().sold);
-      setIsReportLoading(false);
+      // setProductSold(snapShot.data().sold);
+      // setIsReportLoading(false);
     });
   };
   useEffect(() => {
@@ -35,15 +34,12 @@ const Reports = () => {
     setDatePickerVisibility(!isDatePickerVisible);
   };
   const handleConfirmDate = (date) => {
-    const timeString = new Date(date).toISOString();
-    const year = timeString.getFullYear();
-    const month = timeString.getMonth();
-    const day = timeString.getDay();
-    const newDate = `${year}-${month}-${day}`;
-
-    setDate(newDate);
+    const timeString = new Date(date).toISOString().substring(0, 10);
+    console.log(timeString);
     setDatePickerVisibility(!isDatePickerVisible);
+    navigation.navigate("ReportView", { timeString });
   };
+
   return (
     <>
       <View style={styles.header}>

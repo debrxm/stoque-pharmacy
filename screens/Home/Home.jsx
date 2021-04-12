@@ -18,6 +18,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Graph from "../../components/Graph/Graph";
 import OverviewBox from "../../components/OverviewBox/OverviewBox";
+import TransactionPreview from "../../components/TransactionPreview/TransactionPreview";
 import { cxlxrs } from "../../constants/Colors";
 import { firestore } from "../../firebase/config";
 import { styles } from "./styles";
@@ -200,36 +201,7 @@ const Home = () => {
                 style={{ marginBottom: 10 }}
               />
             ) : (
-              <TouchableWithoutFeedback>
-                <View style={styles.transaction}>
-                  <View style={styles.transactionIcon}></View>
-                  <View style={styles.transactionTexts}>
-                    <View style={styles.transactionTextLeft}>
-                      <Text style={styles.transactionName}>
-                        {`Product sold by ${latestSale.cashier || "Emily"}`}
-                      </Text>
-                      <View style={styles.transactionSubtext}>
-                        <Text style={styles.transactionTime}>
-                          {latestSale.created_at
-                            ? moment(latestSale.created_at).fromNow()
-                            : "10 min ago"}
-                        </Text>
-                        <Text style={styles.transactionProductCount}>
-                          {`${latestSale.quantity || 21} Products`}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.transactionTextRight}>
-                      <Text style={styles.transactionId}>
-                        {latestSale.id || "10ingo"}
-                      </Text>
-                      <Text
-                        style={styles.transactionTotalPrice}
-                      >{`₦${latestSale.price || "32,000"}`}</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
+              <TransactionPreview data={latestSale} />
             )}
           </View>
         </ScrollView>

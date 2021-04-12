@@ -23,6 +23,7 @@ import AddProduct from "../screens/AddProduct/AddProduct";
 import ProductView from "../screens/ProductView/ProductView";
 import AddCashier from "../screens/AddCashier/AddCashier";
 import Reports from "../screens/Reports/Reports";
+import ReportView from "../screens/ReportView/ReportView";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -60,6 +61,9 @@ export default function BottomTabNavigator() {
         return false;
         break;
       case "About":
+        return false;
+        break;
+      case "ReportView":
         return false;
         break;
       default:
@@ -254,6 +258,13 @@ function ReportsScreenNavigator() {
       <ScreenStack.Screen
         name="Reports"
         component={Reports}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ScreenStack.Screen
+        name="ReportView"
+        component={ReportView}
         options={{
           headerShown: false,
         }}
