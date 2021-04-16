@@ -1,10 +1,11 @@
 import { StyleSheet } from "react-native";
 import { colors, cxlxrs } from "../../constants/Colors";
+import { FontFamily } from "../../constants/Fonts";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: cxlxrs.white,
   },
   header: {
     flexDirection: "row",
@@ -65,13 +66,12 @@ export const styles = StyleSheet.create({
   },
   settings: {
     marginTop: 50,
-    // marginTop: "auto",
   },
-  invite: {
+  completeSetup: {
     flexDirection: "row",
     alignItems: "center",
     alignItems: "center",
-    backgroundColor: "#dddcdb",
+    backgroundColor: "#ffffff",
     borderRadius: 40,
     padding: 10,
     position: "relative",
@@ -84,26 +84,25 @@ export const styles = StyleSheet.create({
     width: 40,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#ffffff",
     borderRadius: 20,
-    elevation: 3,
-    transform: [{ rotate: "-90deg" }],
   },
-  inviteTexts: {
+  completeSetupTexts: {
     marginLeft: 10,
   },
-  inviteTextMain: {
+  completeSetupTextMain: {
     fontFamily: "FiraCode-SemiBold",
     fontSize: 12,
+    textAlign: "center",
   },
-  inviteTextSub: {
+  completeSetupTextSub: {
     fontFamily: "FiraCode-Regular",
     letterSpacing: 0.05,
-    fontSize: 10,
-  },
-  inviteTextBold: {
-    fontFamily: "FiraCode-SemiBold",
     fontSize: 12,
-    color: colors[0],
+    justifyContent: "center",
+  },
+  completeSetupTextBold: {
+    fontFamily: FontFamily.FiraBold,
+    fontSize: 10,
+    color: cxlxrs.textColor,
   },
 });

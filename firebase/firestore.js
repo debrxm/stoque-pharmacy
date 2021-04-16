@@ -26,18 +26,24 @@ export const CreateProduct = async (data, ownerId) => {
   }
 };
 export const CreateEmployee = async (data) => {
-  const { name, storeName, address, ownerId, branchCode, id } = data;
-  const employeeRef = firestore.doc(`employees/${ownerId}/cashiers/${id}`);
-  const employeeData = {
-    id,
-    storeName,
-    storeId: ownerId,
-    branchCode,
-    name,
-    address,
-  };
+  const { id, shopId } = data;
+  const employeeRef = firestore.doc(`cashiers/${shopId}/cashiers/${id}`);
   try {
-    await employeeRef.set(employeeData);
+    await employeeRef.set(data);
+  } catch (error) {
+    console.log("error creating shop", error.message);
+  }
+};
+export const onAddSubscription = async (data) => {
+  const { userId, subExpireDate, subExpireTimestamp } = data;
+  const userRef = firestore.doc(`users/${userId}`);
+  try {
+    await userRef.update({
+      hasSubcribedBefore: true,
+      isSubscribed: true,
+      subExpireDate,
+      subExpireTimestamp,
+    });
   } catch (error) {
     console.log("error creating shop", error.message);
   }

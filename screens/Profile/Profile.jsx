@@ -136,26 +136,41 @@ const Profile = () => {
             }
             onPress={() => navigation.navigate("About")}
           />
+          {user.isProfileSetupCompleted ? (
+            <SettingsItemWrapper
+              title={"Shop Info"}
+              icon={
+                <AntDesign name="infocirlceo" size={20} color={cxlxrs.black} />
+              }
+              onPress={() => navigation.navigate("ShopInfo")}
+            />
+          ) : null}
           <SettingsItemWrapper
             title={"Share the app"}
             icon={<Feather name="share-2" size={20} color={cxlxrs.black} />}
             onPress={onShare}
           />
         </View>
-        {/* <View style={styles.invite}>
-          <View style={styles.icon}>
-            <FontAwesome5 name="share-alt" size={20} color={cxlxrs.black} />
+        {!user.isProfileSetupCompleted ? (
+          <View style={styles.completeSetup}>
+            <View style={styles.icon}>
+              <Ionicons name="warning" size={26} color={cxlxrs.warn} />
+            </View>
+            <View style={styles.completeSetupTexts}>
+              <Text style={styles.completeSetupTextMain}>Attention Needed</Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={styles.completeSetupTextSub}>
+                  Complete shpe setup{" "}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("CompleteSetup")}
+                >
+                  <Text style={styles.completeSetupTextBold}>{"Tap Here"}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-          <View style={styles.inviteTexts}>
-            <Text style={styles.inviteTextMain}>
-              Invite your friends and earn
-            </Text>
-            <Text style={styles.inviteTextSub}>
-              your refaral code:{" "}
-              <Text style={styles.inviteTextBold}>{"HU6Y5"}</Text>
-            </Text>
-          </View>
-        </View> */}
+        ) : null}
       </View>
     </>
   );

@@ -1,46 +1,26 @@
 import React, { useState, useRef } from "react";
 import PaystackWebView from "react-native-paystack-webview";
-import { Modal } from "react-native";
-import { paystackKeys } from "../../configs/apiKeys";
-import { FUND_WALLET, GET_WALLET } from "../../redux/investment/actionCreator";
-import { useDispatch, connect, useSelector } from "react-redux";
+import { paystackTestKeys } from "../../configs/apiKeys";
+import { useDispatch, useSelector } from "react-redux";
 import AppButton from "../AppButton/AppButton";
 const uuid = require("react-native-uuid");
 
 import { styles } from "./styles";
+import { FontFamily } from "../../constants/Fonts";
+import { onAddSubscription } from "../../firebase/firestore";
+import { cxlxrs } from "../../constants/Colors";
 
-const PayWithPaystack = ({
-  topUp,
-  amount,
-  handleCreateInvoice,
-  wallet,
-  FUND_WALLET,
-}) => {
+const PayWithPaystack = ({ amount, expireDate, label, disabled }) => {
+  const user = useSelector(({ user }) => user.currentUser);
   const childRef = useRef();
-  const [visible, setVisible] = useState(false);
-  const { user, client } = useSelector(({ Auth }) => Auth);
   const [cancel, setCancel] = useState("");
   const dispatch = useDispatch();
-  const handleWebViewMessage = (e) => {
-    console.log("WALLET VALUES ===:", e);
-    if (wallet && !cancel) {
-      return fundWallet();
-    }
-    if (topUp) {
-      return fundWallet();
-    }
-    handleCreateInvoice();
-  };
 
-  const fundWallet = async () => {
-    setVisible(true);
+  const updateSubscription = async () => {
     try {
-      await FUND_WALLET(user.id, { amount: amount });
-      await GET_WALLET(user.id);
-      setVisible(false);
+      onAddSubscription({ userId: user.id, ...expireDate });
       // `Transaction completed, wallet has been credited with ${amount}`
     } catch (err) {
-      setVisible(false);
       // "Ooops an error occured wallet no funded" + " " + err,
     }
   };
@@ -49,7 +29,7 @@ const PayWithPaystack = ({
     <>
       <PaystackWebView
         showPayButton={false}
-        paystackKey={paystackKeys.public}
+        paystackKey={paystackTestKeys.public}
         amount={amount || 500000}
         billingEmail="payment@boundlessservicesng.com"
         billingMobile="09787377462"
@@ -61,27 +41,28 @@ const PayWithPaystack = ({
         onCancel={(e) => {
           setCancel("oooops transaction cancelled!");
         }}
-        onSuccess={handleWebViewMessage}
+        onSuccess={updateSubscription}
         autoStart={false}
         refNumber={uuid.v1()} // this is only for cases where you have a reference number generated
       />
 
       <AppButton
         onPress={() => {
-          // if (!amount) return;
+          if (!amount || disabled) return;
           childRef.current.StartTransaction();
         }}
-        title={topUp ? "Top Up" : "Pay With Paystack"}
+        title={label}
         customStyle={styles.payMethodBtn}
         textStyle={{
-          fontFamily: "FiraCode-SemiBold",
+          fontFamily: FontFamily.FiraSemiBold,
           textTransform: "capitalize",
           fontWeight: "400",
           fontSize: 12,
+          color: cxlxrs.black,
         }}
       />
     </>
   );
 };
 
-export default connect(null, { FUND_WALLET })(PayWithPaystack);
+export default PayWithPaystack;

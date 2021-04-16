@@ -5,14 +5,12 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -69,7 +67,7 @@ const Home = () => {
       setIsStatsLoading(false);
     });
     latestSalesRef
-      .orderBy("created_at")
+      .orderBy("created_at", "desc")
       .limit(1)
       .onSnapshot((snapShot) => {
         if (!snapShot.empty) {
@@ -113,7 +111,6 @@ const Home = () => {
           <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
             <View style={styles.imageContainer}>
               <FontAwesome name="user" size={20} color="black" />
-              {/* <Image style={styles.profilePic} source={avatar} /> */}
             </View>
           </TouchableOpacity>
         </View>

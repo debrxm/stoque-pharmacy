@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
 
   buttonContainer: {
     position: "absolute",
-    bottom: 20,
+    bottom: 70,
     width: "100%",
     backgroundColor: "transparent",
     alignItems: "center",

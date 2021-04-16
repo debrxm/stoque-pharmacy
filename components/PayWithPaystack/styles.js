@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { cxlxrs } from "../../constants/Colors";
 
 export const styles = StyleSheet.create({
   container: {
@@ -82,8 +83,12 @@ export const styles = StyleSheet.create({
   },
   payMethodBtn: {
     height: 40,
+    width: "60%",
     paddingVertical: 10,
     borderRadius: 30,
     marginVertical: 5,
+    backgroundColor: cxlxrs.white,
+    position: "absolute",
+    bottom: 20,
   },
 });

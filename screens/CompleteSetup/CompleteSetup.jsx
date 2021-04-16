@@ -6,20 +6,20 @@ import AddProductInput from "../../components/AddProductInput/AddProductInput";
 import AppButton from "../../components/AppButton/AppButton";
 import CustomPopUp from "../../components/CustomPopUp/CustomPopUp";
 import { cxlxrs } from "../../constants/Colors";
-import { v4 as uuidv4 } from "uuid";
 
 import { styles } from "./styles";
-import { CreateEmployee } from "../../firebase/firestore";
+import { CompleteStoreSetup } from "../../firebase/firestore";
 import { useSelector } from "react-redux";
 import { GenerateRandomNDigits } from "../../utils/helper";
 
-const AddCashier = () => {
+const CompleteSetup = () => {
   const user = useSelector(({ user }) => user.currentUser);
   const navigation = useNavigation();
-  const [passcode, setPasscode] = useState(GenerateRandomNDigits(5));
-  const [cashierName, setCashierName] = useState("");
-  const [address, setAddress] = useState("");
+  const [shopId, setShopId] = useState(GenerateRandomNDigits(3));
+  const [shopName, setShopName] = useState("");
+  const [shopAddress, setAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("+234");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -27,59 +27,47 @@ const AddCashier = () => {
     onReloadPasscode();
   }, []);
   const onReloadPasscode = async (e) => {
-    setPasscode(GenerateRandomNDigits(5));
+    setShopId(GenerateRandomNDigits(3));
   };
-  const onCreateCashier = async (cashierData) => {
+  const onCompleteSetup = async (shopData) => {
     try {
-      await CreateEmployee(cashierData, user.id);
+      await CompleteStoreSetup(shopData, user.id);
       setLoading(false);
     } catch (error) {
       setLoading(false);
     }
   };
   function regenerateId() {
-    checkIfCashierIdExist();
+    onReloadPasscode();
+    checkIfShopIdExist();
   }
 
-  async function checkIfCashierIdExist() {
-    if (!user.isProfileSetupCompleted) {
-      setErrorMessage(`You haven't set up your shop `);
-      return;
-    }
-
+  async function checkIfShopIdExist() {
     setLoading(true);
-    const id = uuidv4();
-    if (cashierName.trim() === "") {
+    if (shopName.trim() === "" || shopAddress.trim() === "") {
       setLoading(false);
       setErrorMessage(`All fields are required!`);
       return;
     }
-    const cashierRef = firestore
-      .collection("cashiers")
-      .doc(user.id)
-      .collection("cashiers")
-      .where("id", "==", `${id}`);
-    const snapshot = await cashierRef.get();
+    const shopRef = firestore
+      .collection("users")
+      .where("shopId", "==", `${shopId}`);
+    const snapshot = await shopRef.get();
     if (snapshot.docs.length > 0) {
-      setErrorMessage(
-        "Id already existed so we are trying again with another id"
-      );
-      regenerateId();
+      setErrorMessage("Id already exist, tap the icon to generate another one");
       setLoading(false);
       return;
     }
 
-    const cashierData = {
-      id,
-      name: cashierName,
-      shopId: user.shopId,
-      ownerId: user.id,
+    const shopData = {
+      shopId,
+      shopName,
       phone,
-      address,
-      created_at: Date.now(),
-      passcode,
+      whatsapp,
+      shopAddress,
+      isProfileSetupCompleted: true,
     };
-    onCreateCashier(cashierData);
+    onCompleteSetup(shopData);
   }
   return (
     <>
@@ -93,7 +81,7 @@ const AddCashier = () => {
             </View>
           </TouchableOpacity>
         </View>
-        <Text style={styles.routeTitle}>Add Cashier</Text>
+        <Text style={styles.routeTitle}>Complete Shop Setup</Text>
       </View>
       <ScrollView
         contentContainerStyle={styles.contentContainer}
@@ -113,19 +101,45 @@ const AddCashier = () => {
             />
           ) : null}
         </View>
+        <View style={[styles.flexGrouping, { marginBottom: 0 }]}>
+          <View style={{ width: "79%" }}>
+            <Text style={styles.dateSelectorLabel}>Shop ID</Text>
+            <AppButton
+              title={shopId}
+              customStyle={{
+                ...styles.shopIdView,
+                width: "100%",
+              }}
+              textStyle={styles.shopIdViewText}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() => onReloadPasscode()}
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "flex-end",
+              width: "20%",
+              height: 50,
+            }}
+          >
+            <AntDesign name="reload1" size={30} color={cxlxrs.textColor} />
+          </TouchableOpacity>
+        </View>
+        <View style={{ height: 20 }}></View>
         <AddProductInput
-          label="Cashier Name"
-          value={cashierName}
+          label="Shop Name"
+          value={shopName}
           onChangeText={(e) => {
             setErrorMessage("");
-            setCashierName(e);
+            setShopName(e);
           }}
           autoCapitalize="words"
         />
         <View style={{ height: 20 }}></View>
         <AddProductInput
           label="Address"
-          value={address}
+          value={shopAddress}
           onChangeText={(e) => {
             setErrorMessage("");
             setAddress(e);
@@ -143,31 +157,15 @@ const AddCashier = () => {
           keyType="numeric"
         />
         <View style={{ height: 20 }}></View>
-        <View style={[styles.flexGrouping, { marginBottom: 30 }]}>
-          <View style={{ width: "79%" }}>
-            <Text style={styles.dateSelectorLabel}>Passcode</Text>
-            <AppButton
-              title={passcode}
-              customStyle={{
-                ...styles.passcodeView,
-                width: "100%",
-              }}
-              textStyle={styles.passcodeViewText}
-            />
-          </View>
-          <TouchableOpacity
-            onPress={() => onReloadPasscode()}
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "flex-end",
-              width: "20%",
-              height: 50,
-            }}
-          >
-            <AntDesign name="reload1" size={30} color={cxlxrs.textColor} />
-          </TouchableOpacity>
-        </View>
+        <AddProductInput
+          label="Whatsapp"
+          value={whatsapp}
+          onChangeText={(e) => {
+            setErrorMessage("");
+            setWhatsapp(e);
+          }}
+          keyType="numeric"
+        />
 
         <View
           style={{
@@ -180,8 +178,8 @@ const AddCashier = () => {
           }}
         >
           <AppButton
-            onPress={() => !loading && checkIfCashierIdExist()}
-            title="Add"
+            onPress={() => !loading && checkIfShopIdExist()}
+            title="Complete"
             customStyle={styles.addBtn}
             textStyle={styles.addBtnText}
           />
@@ -191,4 +189,4 @@ const AddCashier = () => {
   );
 };
 
-export default AddCashier;
+export default CompleteSetup;

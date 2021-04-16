@@ -7,13 +7,14 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Onboarding from "../screens/Onboarding/Onboarding";
-import BottomTabNavigator from "./BottomTabNavigator";
+import BottomTabNavigator from "./BottomTabNavigatorCustom";
 import Register from "../screens/Register/Register";
 import Login from "../screens/Login/Login";
 import ForgotPassword from "../screens/ForgotPassword/ForgotPassword";
 import { auth, firestore } from "../firebase/config";
 import { createShopAdminProfile } from "../firebase/auth";
 import { setCurrentUser } from "../redux/user/actions";
+import RenewLicense from "../screens/RenewLicense/RenewLicense";
 
 function Navigation({ colorScheme }) {
   const currentUser = useSelector(({ user }) => user.currentUser);
@@ -39,16 +40,25 @@ function Navigation({ colorScheme }) {
         });
       }
     });
-  }, []);
+  }, [""]);
 
   const renderer = () => {
-    return currentUser ? <RootNavigator /> : <AuthNavigator />;
+    console.log(new Date(Date.now()).getTime());
+    const subExpired =
+      new Date(Date.now()).getTime() >= currentUser.subExpireDate;
+    if (currentUser.hasSubcribedBefore && subExpired) {
+      return <LicenseNavigator type="renew" />;
+    } else if (!currentUser.hasSubcribedBefore) {
+      return <LicenseNavigator type="subscribe" />;
+    } else {
+      return <RootNavigator />;
+    }
   };
   return (
     <NavigationContainer
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
     >
-      {renderer()}
+      {currentUser ? renderer() : <AuthNavigator />}
     </NavigationContainer>
   );
 }
@@ -60,6 +70,20 @@ function RootNavigator() {
     <RootStack.Navigator screenOptions={{ headerShown: false }}>
       <RootStack.Screen name="Root" component={BottomTabNavigator} />
     </RootStack.Navigator>
+  );
+}
+
+const LicenseStack = createStackNavigator();
+
+function LicenseNavigator({ type }) {
+  return (
+    <LicenseStack.Navigator screenOptions={{ headerShown: false }}>
+      <LicenseStack.Screen
+        name="Root"
+        children={() => <RenewLicense type={type} />}
+        options={{ headerShown: false }}
+      />
+    </LicenseStack.Navigator>
   );
 }
 

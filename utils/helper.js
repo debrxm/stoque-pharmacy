@@ -37,3 +37,17 @@ export const Wait = (timeout) => {
     setTimeout(resolve, timeout);
   });
 };
+
+export const GetExpirationDate = (duration) => {
+  const date = new Date();
+  const month = date.getMonth();
+  date.setMonth(date.getMonth() + duration);
+
+  if (date.getMonth() == month) date.setDate(0);
+  date.setHours(0, 0, 0, 0);
+
+  return {
+    subExpireDate: new Date(date).toISOString().substring(0, 10),
+    subExpireTimestamp: new Date(date).getTime(),
+  };
+};

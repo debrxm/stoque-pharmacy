@@ -17,10 +17,11 @@ export const createShopAdminProfile = async (userAuth, otherProps) => {
       email,
       createdAt: createdAt,
       profileImage: photoUri || "",
-      hasBranch: false,
+      isProfileSetupCompleted: false,
       hasSubcribedBefore: false,
       isSubscribed: false,
       subExpireDate: "",
+      subExpireTimestamp: "",
       emailVerified,
     };
     try {
@@ -30,24 +31,22 @@ export const createShopAdminProfile = async (userAuth, otherProps) => {
       console.log("error creating user", error.message);
     }
   }
-
-  return userRef;
 };
-export const createShopCasheirProfile = async (data, shopId) => {
-  const { cashierId } = data;
-
-  const cashierRef = firestore.doc(`shop/${shopId}/cashiers/${cashierId}`);
+export const CompleteStoreSetup = async (data, userId) => {
+  const userRef = firestore.doc(`users/${userId}`);
 
   try {
-    await cashierRef.set(data);
+    await userRef.update(data);
   } catch (error) {
-    console.log("error creating user", error.message);
+    console.log("error", error.message);
   }
 };
-
-const googleProvider = new firebase.auth.GoogleAuthProvider();
-googleProvider.setCustomParameters({
-  prompt: "select_account",
-});
-
-export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
+export const CreateShopCasheirProfile = async (data) => {
+  const { id, shopId } = data;
+  const employeeRef = firestore.doc(`cashiers/${shopId}/cashiers/${id}`);
+  try {
+    await employeeRef.set(data);
+  } catch (error) {
+    console.log("error creating cashier", error.message);
+  }
+};
