@@ -1,7 +1,13 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import {
+  ActivityIndicator,
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import AddProductInput from "../../components/AddProductInput/AddProductInput";
 import AppButton from "../../components/AppButton/AppButton";
 import CustomPopUp from "../../components/CustomPopUp/CustomPopUp";
@@ -9,9 +15,10 @@ import { cxlxrs } from "../../constants/Colors";
 import { v4 as uuidv4 } from "uuid";
 
 import { styles } from "./styles";
-import { CreateEmployee } from "../../firebase/firestore";
+import { CreateShopCasheirProfile } from "../../firebase/auth";
 import { useSelector } from "react-redux";
 import { GenerateRandomNDigits } from "../../utils/helper";
+import { firestore } from "../../firebase/config";
 
 const AddCashier = () => {
   const user = useSelector(({ user }) => user.currentUser);
@@ -31,9 +38,11 @@ const AddCashier = () => {
   };
   const onCreateCashier = async (cashierData) => {
     try {
-      await CreateEmployee(cashierData, user.id);
+      CreateShopCasheirProfile(cashierData, user.shopId);
       setLoading(false);
     } catch (error) {
+      console.log(error);
+      setErrorMessage(`An error occured while creating cashier`);
       setLoading(false);
     }
   };
@@ -42,13 +51,16 @@ const AddCashier = () => {
   }
 
   async function checkIfCashierIdExist() {
+    setErrorMessage("");
     if (!user.isProfileSetupCompleted) {
       setErrorMessage(`You haven't set up your shop `);
       return;
     }
 
     setLoading(true);
-    const id = uuidv4();
+    const id = uuidv4()
+      .split("-")
+      .join("");
     if (cashierName.trim() === "") {
       setLoading(false);
       setErrorMessage(`All fields are required!`);
@@ -58,7 +70,7 @@ const AddCashier = () => {
       .collection("cashiers")
       .doc(user.id)
       .collection("cashiers")
-      .where("id", "==", `${id}`);
+      .where("phone", "==", `${phone}`);
     const snapshot = await cashierRef.get();
     if (snapshot.docs.length > 0) {
       setErrorMessage(
@@ -78,6 +90,8 @@ const AddCashier = () => {
       address,
       created_at: Date.now(),
       passcode,
+      subExpireDate: user.subExpireDate,
+      subExpireTimestamp: user.subExpireTimestamp,
     };
     onCreateCashier(cashierData);
   }
@@ -179,12 +193,20 @@ const AddCashier = () => {
             bottom: 20,
           }}
         >
-          <AppButton
-            onPress={() => !loading && checkIfCashierIdExist()}
-            title="Add"
-            customStyle={styles.addBtn}
-            textStyle={styles.addBtnText}
-          />
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color={cxlxrs.black}
+              style={{ marginBottom: 10 }}
+            />
+          ) : (
+            <AppButton
+              onPress={() => !loading && checkIfCashierIdExist()}
+              title="Add"
+              customStyle={styles.addBtn}
+              textStyle={styles.addBtnText}
+            />
+          )}
         </View>
       </ScrollView>
     </>

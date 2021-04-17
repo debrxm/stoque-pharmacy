@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
     fontFamily: FontFamily.FiraMedium,
   },
   overview: {
-    minHeight: 140,
     backgroundColor: cxlxrs.white,
     justifyContent: "center",
     alignItems: "center",
@@ -33,6 +32,9 @@ export const styles = StyleSheet.create({
     paddingTop: 0,
   },
   overviewMainTextsContainer: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
   },
   overviewMainTextLabel: {
@@ -40,11 +42,13 @@ export const styles = StyleSheet.create({
     color: cxlxrs.textColor,
     marginBottom: 2,
     fontFamily: FontFamily.FiraBold,
+    textAlign: "center",
   },
   overviewMainTextBold: {
     color: cxlxrs.black,
     fontSize: 25,
     fontFamily: FontFamily.FiraSemiBold,
+    textAlign: "center",
   },
   navButtons: {
     flexDirection: "row",
@@ -69,7 +73,7 @@ export const styles = StyleSheet.create({
     fontSize: 11,
     color: cxlxrs.textColor,
   },
-  noProduct: {
+  noCashier: {
     alignItems: "center",
     minHeight: 100,
     marginVertical: 20,

@@ -39,8 +39,8 @@ const Home = () => {
     .doc(user.id)
     .collection("products");
   const cashiersRef = firestore
-    .collection("employees")
-    .doc(user.id)
+    .collection("cashiers")
+    .doc(`${user.shopId}`)
     .collection("cashiers");
   const statsRef = firestore.collection("stats").doc(user.id);
   const latestSalesRef = firestore

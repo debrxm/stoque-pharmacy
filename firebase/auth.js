@@ -42,11 +42,11 @@ export const CompleteStoreSetup = async (data, userId) => {
     console.log("error", error.message);
   }
 };
-export const CreateShopCasheirProfile = async (data) => {
-  const { id, shopId } = data;
-  const employeeRef = firestore.doc(`cashiers/${shopId}/cashiers/${id}`);
+export const CreateShopCasheirProfile = async (data, shopId) => {
+  const { id } = data;
+  const cashierRef = firestore.doc(`cashiers/${shopId}/cashiers/${id}`);
   try {
-    await employeeRef.set(data);
+    await cashierRef.set(data);
   } catch (error) {
     console.log("error creating cashier", error.message);
   }
