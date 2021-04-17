@@ -43,7 +43,6 @@ function Navigation({ colorScheme }) {
   }, [""]);
 
   const renderer = () => {
-    console.log(new Date(Date.now()).getTime());
     const subExpired =
       new Date(Date.now()).getTime() >= currentUser.subExpireDate;
     if (currentUser.hasSubcribedBefore && subExpired) {

@@ -49,7 +49,7 @@ const EditProfile = () => {
       }
     })();
     !user.location && getLocationAsync();
-  }, []);
+  }, [""]);
 
   async function getLocationAsync() {
     let { status } = await Location.requestPermissionsAsync();

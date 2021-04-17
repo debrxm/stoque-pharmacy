@@ -1,16 +1,23 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import {
+  ActivityIndicator,
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import AddProductInput from "../../components/AddProductInput/AddProductInput";
 import AppButton from "../../components/AppButton/AppButton";
 import CustomPopUp from "../../components/CustomPopUp/CustomPopUp";
 import { cxlxrs } from "../../constants/Colors";
 
 import { styles } from "./styles";
-import { CompleteStoreSetup } from "../../firebase/firestore";
+import { CompleteStoreSetup } from "../../firebase/auth";
 import { useSelector } from "react-redux";
 import { GenerateRandomNDigits } from "../../utils/helper";
+import { firestore } from "../../firebase/config";
 
 const CompleteSetup = () => {
   const user = useSelector(({ user }) => user.currentUser);
@@ -25,7 +32,7 @@ const CompleteSetup = () => {
 
   useEffect(() => {
     onReloadPasscode();
-  }, []);
+  }, [""]);
   const onReloadPasscode = async (e) => {
     setShopId(GenerateRandomNDigits(3));
   };
@@ -33,14 +40,11 @@ const CompleteSetup = () => {
     try {
       await CompleteStoreSetup(shopData, user.id);
       setLoading(false);
+      navigation.goBack();
     } catch (error) {
       setLoading(false);
     }
   };
-  function regenerateId() {
-    onReloadPasscode();
-    checkIfShopIdExist();
-  }
 
   async function checkIfShopIdExist() {
     setLoading(true);
@@ -177,12 +181,20 @@ const CompleteSetup = () => {
             bottom: 20,
           }}
         >
-          <AppButton
-            onPress={() => !loading && checkIfShopIdExist()}
-            title="Complete"
-            customStyle={styles.addBtn}
-            textStyle={styles.addBtnText}
-          />
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color={cxlxrs.black}
+              style={{ marginBottom: 10 }}
+            />
+          ) : (
+            <AppButton
+              onPress={() => !loading && checkIfShopIdExist()}
+              title="Complete"
+              customStyle={styles.addBtn}
+              textStyle={styles.addBtnText}
+            />
+          )}
         </View>
       </ScrollView>
     </>

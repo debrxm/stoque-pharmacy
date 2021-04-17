@@ -32,7 +32,7 @@ export default function QRIndicator() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [""]);
 
   return (
     <AnimatedScanner

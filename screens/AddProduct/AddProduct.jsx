@@ -66,7 +66,6 @@ const AddProduct = () => {
   }, [price, cost, quantity]);
 
   useEffect(() => {
-    console.log("Rerendering");
     refactorCode();
   }, [price, cost, quantity, refactorCode]);
   const onSuccessful = useCallback(() => {

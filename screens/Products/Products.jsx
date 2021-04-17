@@ -106,7 +106,7 @@ const Products = () => {
   };
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [""]);
   return (
     <>
       <View style={styles.header}>

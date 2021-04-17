@@ -26,7 +26,7 @@ const Scanner = ({
 
   useEffect(() => {
     requestPermission();
-  }, []);
+  }, [""]);
   const getProductData = async (barcode) => {
     setIsLoading(true);
     const productsRef = firestore

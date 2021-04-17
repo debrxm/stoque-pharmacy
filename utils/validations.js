@@ -1,6 +1,6 @@
 import validator from "validator";
 
-export const trim = (value) => value.replace(/\s/gi, "");
+export const trim = (value) => value.toString().replace(/\s/gi, "");
 export const validateUser = (user) => {
   const errors = [];
   if (!validator.isEmail(trim(user.email))) {

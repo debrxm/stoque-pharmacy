@@ -30,7 +30,7 @@ const Register = () => {
   );
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  useEffect(() => {}, []);
+  useEffect(() => {}, [""]);
 
   const handleRegisterUser = async () => {
     if (fullname.trim() === "" || email.trim() === "" || phone.trim() === "") {

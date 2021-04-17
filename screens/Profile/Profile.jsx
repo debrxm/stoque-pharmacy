@@ -14,7 +14,7 @@ import { Wait } from "../../utils/helper";
 const Profile = () => {
   const user = useSelector(({ user }) => user.currentUser);
   const [dialogVisible, setDialogVisible] = useState(false);
-  useEffect(() => {}, []);
+  useEffect(() => {}, [""]);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const handleSignout = () => {
@@ -160,7 +160,7 @@ const Profile = () => {
               <Text style={styles.completeSetupTextMain}>Attention Needed</Text>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={styles.completeSetupTextSub}>
-                  Complete shpe setup{" "}
+                  Complete shop setup{" "}
                 </Text>
                 <TouchableOpacity
                   onPress={() => navigation.navigate("CompleteSetup")}

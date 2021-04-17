@@ -8,7 +8,7 @@ import { styles } from "./styles";
 
 const Notification = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
-  useEffect(() => {}, []);
+  useEffect(() => {}, [""]);
 
   const navigation = useNavigation();
   return (

@@ -43,7 +43,6 @@ const ReportView = ({ reportViewVisible, setReportViewVisible, date }) => {
     setIsLoading(false);
   };
   useEffect(() => {
-    console.log("HERE", date);
     getSalesReportData();
   }, [date]);
   return (

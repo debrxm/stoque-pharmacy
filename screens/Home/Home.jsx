@@ -80,7 +80,7 @@ const Home = () => {
   };
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [""]);
 
   return (
     <>

@@ -31,6 +31,7 @@ export const createShopAdminProfile = async (userAuth, otherProps) => {
       console.log("error creating user", error.message);
     }
   }
+  return userRef;
 };
 export const CompleteStoreSetup = async (data, userId) => {
   const userRef = firestore.doc(`users/${userId}`);

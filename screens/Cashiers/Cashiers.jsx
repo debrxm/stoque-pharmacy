@@ -11,7 +11,7 @@ const Cashiers = () => {
   const navigation = useNavigation();
   const [hasProduct] = useState(false);
 
-  useEffect(() => {}, []);
+  useEffect(() => {}, [""]);
 
   return (
     <>

@@ -25,7 +25,7 @@ const AddCashier = () => {
 
   useEffect(() => {
     onReloadPasscode();
-  }, []);
+  }, [""]);
   const onReloadPasscode = async (e) => {
     setPasscode(GenerateRandomNDigits(5));
   };

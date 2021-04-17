@@ -24,7 +24,7 @@ const Graph = ({ filter, setFilter, title, monthOrderCount }) => {
   };
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [""]);
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View

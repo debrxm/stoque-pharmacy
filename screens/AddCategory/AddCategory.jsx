@@ -24,7 +24,7 @@ const AddCategory = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {}, []);
+  useEffect(() => {}, [""]);
   const onCreateCategory = async (categoryRef, categoryData) => {
     try {
       await categoryRef.doc(categoryData.value).set(categoryData);

@@ -28,7 +28,7 @@ export default function BarCodeScreen(props) {
     return () => {
       clearTimeout(timeout);
     };
-  }, []);
+  }, [""]);
 
   React.useEffect(() => {
     if (!state.isVisible && state.url) {

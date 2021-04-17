@@ -23,7 +23,7 @@ const ReportGraph = () => {
   };
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [""]);
   return (
     <View style={{ alignItems: "center", width: "100%", marginVertical: 10 }}>
       <View

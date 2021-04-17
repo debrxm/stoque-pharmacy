@@ -16,7 +16,7 @@ import { styles } from "./styles";
 
 const About = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
-  useEffect(() => {}, []);
+  useEffect(() => {}, [""]);
   const navigation = useNavigation();
   return (
     <>
