@@ -33,16 +33,14 @@ export const styles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 20,
   },
-  userImage: {
-    width: 110,
-    height: 110,
-    borderRadius: 100,
-    borderWidth: 2,
-    borderColor: "#cd9931",
-  },
   usernameContainer: {
-    flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  adminText: {
+    fontSize: 16,
+    color: "#353535",
+    fontFamily: "FiraCode-Regular",
   },
   username: {
     color: "#42414C",
@@ -64,8 +62,32 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "FiraCode-Regular",
   },
+  info: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    minHeight: 100,
+  },
+  infoLightText: {
+    fontSize: 12,
+    color: "#97989A",
+    fontFamily: FontFamily.FiraBold,
+  },
+  infoBoldText: {
+    fontSize: 16,
+    color: "#353535",
+    fontFamily: "FiraCode-Regular",
+  },
+  infoName: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  infoId: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
   settings: {
-    marginTop: 50,
+    marginTop: 30,
   },
   completeSetup: {
     flexDirection: "row",

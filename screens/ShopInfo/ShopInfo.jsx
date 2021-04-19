@@ -14,31 +14,26 @@ import CustomPopUp from "../../components/CustomPopUp/CustomPopUp";
 import { cxlxrs } from "../../constants/Colors";
 
 import { styles } from "./styles";
-import { CompleteStoreSetup } from "../../firebase/auth";
+import { UpdateShopInfo } from "../../firebase/auth";
 import { useSelector } from "react-redux";
-import { GenerateRandomNDigits } from "../../utils/helper";
-import { firestore } from "../../firebase/config";
 
-const CompleteSetup = () => {
+const ShopInfo = () => {
   const user = useSelector(({ user }) => user.currentUser);
   const navigation = useNavigation();
-  const [shopId, setShopId] = useState(GenerateRandomNDigits(3));
-  const [shopName, setShopName] = useState("");
-  const [shopAddress, setShopAddress] = useState("");
-  const [phone, setPhone] = useState("");
-  const [whatsapp, setWhatsapp] = useState("+234");
+  const [shopId] = useState(user.shopId);
+  const [shopName, setShopName] = useState(user.shopName);
+  const [shopAddress, setShopAddress] = useState(user.shopAddress);
+  const [phone, setPhone] = useState(user.phone);
+  const [whatsapp, setWhatsapp] = useState(user.whatsapp);
   const [loading, setLoading] = useState(false);
+  const [editing, setEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    onReloadPasscode();
-  }, [""]);
-  const onReloadPasscode = async (e) => {
-    setShopId(GenerateRandomNDigits(3));
-  };
+  useEffect(() => {}, [""]);
+
   const onCompleteSetup = async (shopData) => {
     try {
-      await CompleteStoreSetup(shopData, user.id);
+      await UpdateShopInfo(shopData, user.id);
       setLoading(false);
       navigation.goBack();
     } catch (error) {
@@ -53,31 +48,28 @@ const CompleteSetup = () => {
       setErrorMessage(`All fields are required!`);
       return;
     }
-    const shopRef = firestore
-      .collection("users")
-      .where("shopId", "==", `${shopId}`);
-    const snapshot = await shopRef.get();
-    if (snapshot.docs.length > 0) {
-      setErrorMessage("Id already exist, tap the icon to generate another one");
-      setLoading(false);
-      return;
-    }
-
     const shopData = {
-      shopId,
       shopName,
       phone,
       whatsapp,
       shopAddress,
-      isProfileSetupCompleted: true,
     };
     onCompleteSetup(shopData);
   }
+  const onEditting = () => {
+    if (editing && !loading) {
+      checkIfShopIdExist();
+    } else {
+      setEditing(true);
+    }
+  };
   return (
     <>
       <View style={styles.header}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+            onPress={() => (editing ? setEditing(false) : navigation.goBack())}
+          >
             <View
               style={{ flexDirection: "row", alignItems: "center", width: 90 }}
             >
@@ -85,7 +77,9 @@ const CompleteSetup = () => {
             </View>
           </TouchableOpacity>
         </View>
-        <Text style={styles.routeTitle}>Complete Shop Setup</Text>
+        <Text style={styles.routeTitle}>
+          {editing ? "Editing Shop Info" : "Shop Info"}
+        </Text>
       </View>
       <ScrollView
         contentContainerStyle={styles.contentContainer}
@@ -118,7 +112,7 @@ const CompleteSetup = () => {
             />
           </View>
           <TouchableOpacity
-            onPress={() => onReloadPasscode()}
+            onPress={() => {}}
             style={{
               flexDirection: "row",
               justifyContent: "center",
@@ -138,6 +132,7 @@ const CompleteSetup = () => {
             setErrorMessage("");
             setShopName(e);
           }}
+          editable={editing}
           autoCapitalize="words"
         />
         <View style={{ height: 20 }}></View>
@@ -148,6 +143,7 @@ const CompleteSetup = () => {
             setErrorMessage("");
             setShopAddress(e);
           }}
+          editable={editing}
           autoCapitalize="words"
         />
         <View style={{ height: 20 }}></View>
@@ -158,6 +154,7 @@ const CompleteSetup = () => {
             setErrorMessage("");
             setPhone(e);
           }}
+          editable={editing}
           keyType="numeric"
         />
         <View style={{ height: 20 }}></View>
@@ -168,6 +165,7 @@ const CompleteSetup = () => {
             setErrorMessage("");
             setWhatsapp(e);
           }}
+          editable={editing}
           keyType="numeric"
         />
 
@@ -188,12 +186,35 @@ const CompleteSetup = () => {
               style={{ marginBottom: 10 }}
             />
           ) : (
-            <AppButton
-              onPress={() => !loading && checkIfShopIdExist()}
-              title="Complete"
-              customStyle={styles.addBtn}
-              textStyle={styles.addBtnText}
-            />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <AppButton
+                onPress={onEditting}
+                title={editing ? "Confirm" : "Edit"}
+                customStyle={{
+                  ...styles.addBtn,
+                  width: editing ? "45%" : "100%",
+                }}
+                textStyle={styles.addBtnText}
+              />
+              {editing ? (
+                <AppButton
+                  onPress={() => setEditing(false)}
+                  title={"Cancel"}
+                  customStyle={{
+                    ...styles.addBtn,
+                    backgroundColor: cxlxrs.danger,
+                    width: editing ? "45%" : "100%",
+                  }}
+                  textStyle={styles.addBtnText}
+                />
+              ) : null}
+            </View>
           )}
         </View>
       </ScrollView>
@@ -201,4 +222,4 @@ const CompleteSetup = () => {
   );
 };
 
-export default CompleteSetup;
+export default ShopInfo;

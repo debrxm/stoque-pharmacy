@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  ScrollView,
+  FlatList,
   Text,
   TouchableOpacity,
   View,
@@ -26,7 +26,7 @@ const Home = () => {
   const [filter, setFilter] = useState("thisWeek");
   const [productCount, setProductCount] = useState("0");
   const [cashierCount, setCashierCount] = useState("0");
-  const [latestSale, setLatestSale] = useState({});
+  const [latestSale, setLatestSale] = useState([]);
   const [revenue, setRevenue] = useState("0");
   const [isTransactionLoading, setIsTransactionLoading] = useState(true);
   const [isProductLoading, setIsProductLoading] = useState(true);
@@ -68,11 +68,18 @@ const Home = () => {
     });
     latestSalesRef
       .orderBy("created_at", "desc")
-      .limit(1)
+      .limit(3)
       .onSnapshot((snapShot) => {
+        const salesArr = [];
         if (!snapShot.empty) {
-          setLatestSale(snapShot.docs[0].data());
-          setIsTransactionLoading(false);
+          const size = snapShot.docs.length - 1;
+          snapShot.docs.forEach((item, index) => {
+            salesArr.push(item.data());
+            if (index === size) {
+              setLatestSale(salesArr);
+              setIsTransactionLoading(false);
+            }
+          });
           return;
         }
         setIsTransactionLoading(false);
@@ -174,34 +181,44 @@ const Home = () => {
             textColor={cxlxrs.white}
           />
         </View>
-        <ScrollView>
-          <Graph
-            filter={filter}
-            setFilter={setFilter}
-            title="Orders"
-            monthOrderCount={20}
-          />
-          <View style={styles.section}>
-            <View
-              style={{
-                flexDirection: "row",
-                width: "100%",
-                alignItems: "center",
-              }}
-            >
-              <Text style={styles.sectionTitle}>Latest Transaction</Text>
-            </View>
-            {isTransactionLoading ? (
-              <ActivityIndicator
-                size="large"
-                color={cxlxrs.black}
-                style={{ marginBottom: 10 }}
-              />
-            ) : (
-              <TransactionPreview data={latestSale} />
-            )}
+        <Graph filter={filter} setFilter={setFilter} title="Orders" />
+        <View style={styles.section}>
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
+            <Text style={styles.sectionTitle}>Latest Transactions</Text>
           </View>
-        </ScrollView>
+          {isTransactionLoading ? (
+            <ActivityIndicator
+              size="large"
+              color={cxlxrs.black}
+              style={{ marginBottom: 10 }}
+            />
+          ) : (
+            <View style={styles.listContainer}>
+              <FlatList
+                data={latestSale}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item, index }) => (
+                  <>
+                    {index === 0 ? <View style={{ height: 20 }}></View> : null}
+                    <TransactionPreview key={index} data={item} />
+                  </>
+                )}
+                contentContainerStyle={{
+                  flexGrow: 1,
+                }}
+                style={{ height: 3 * 60, paddingBottom: 20 }}
+                initialNumToRender={3}
+                onEndReachedThreshold={0.1}
+              />
+            </View>
+          )}
+        </View>
       </View>
     </>
   );

@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: cxlxrs.white,
     elevation: 2,
-    marginTop: 5,
+    marginBottom: 20,
   },
   transactionIcon: { width: 20 },
   transactionTexts: {

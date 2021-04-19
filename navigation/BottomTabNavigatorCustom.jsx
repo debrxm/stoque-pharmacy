@@ -19,6 +19,7 @@ import Profile from "../screens/Profile/Profile";
 import Notification from "../screens/Notification/Notification";
 import EditProfile from "../screens/EditProfile/EditProfile";
 import CompleteSetup from "../screens/CompleteSetup/CompleteSetup";
+import ShopInfo from "../screens/ShopInfo/ShopInfo";
 import About from "../screens/About/About";
 import Cashiers from "../screens/Cashiers/Cashiers";
 import Products from "../screens/Products/Products";
@@ -39,10 +40,11 @@ const TabBarCustomButton = ({
   accessibilityState,
   children,
   onPress,
+  hidden,
 }) => {
-  var isSelected = accessibilityState.selected;
-
-  if (isSelected) {
+  const isSelected = accessibilityState.selected;
+  const route = accessibilityLabel.split(",")[0];
+  if (isSelected && !hidden) {
     return (
       <View style={{ flex: 1, alignItems: "center" }}>
         <View
@@ -104,52 +106,55 @@ const CustomTabBar = (props) => {
     return <BottomTabBar {...props.props} />;
   }
 };
+function getTabBarVisible(route) {
+  const routeName = getFocusedRouteNameFromRoute(route);
+  switch (routeName) {
+    case "EditProfile":
+      return false;
+      break;
+    case "Profile":
+      return false;
+      break;
+    case "Notification":
+      return false;
+      break;
+    case "CompleteSetup":
+      return false;
+      break;
+    case "ShopInfo":
+      return false;
+      break;
+    case "Cashiers":
+      return false;
+      break;
+    case "AddCashier":
+      return false;
+      break;
+    // case "Products":
+    //   return false;
+    //   break;
+    case "AddCategory":
+      return false;
+      break;
+    case "AddProduct":
+      return false;
+      break;
+    case "ProductView":
+      return false;
+      break;
+    case "About":
+      return false;
+      break;
+    case "ReportView":
+      return false;
+      break;
+    default:
+      return true;
+      break;
+  }
+}
 
 const BottomTabNavigator = () => {
-  function getTabBarVisible(route) {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    switch (routeName) {
-      case "EditProfile":
-        return false;
-        break;
-      case "Profile":
-        return false;
-        break;
-      case "Notification":
-        return false;
-        break;
-      case "CompleteSetup":
-        return false;
-        break;
-      case "Cashiers":
-        return false;
-        break;
-      case "AddCashier":
-        return false;
-        break;
-      // case "Products":
-      //   return false;
-      //   break;
-      case "AddCategory":
-        return false;
-        break;
-      case "AddProduct":
-        return false;
-        break;
-      case "ProductView":
-        return false;
-        break;
-      case "About":
-        return false;
-        break;
-      case "ReportView":
-        return false;
-        break;
-      default:
-        return true;
-        break;
-    }
-  }
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -197,7 +202,8 @@ const BottomTabNavigator = () => {
               color={focused ? cxlxrs.white : cxlxrs.textColor}
             />
           ),
-          tabBarButton: (props) => <TabBarCustomButton {...props} />,
+          tabBarButton: (props) =>
+            getTabBarVisible(route) && <TabBarCustomButton {...props} />,
         })}
       />
       <Tab.Screen
@@ -213,7 +219,8 @@ const BottomTabNavigator = () => {
               color={focused ? cxlxrs.white : cxlxrs.textColor}
             />
           ),
-          tabBarButton: (props) => <TabBarCustomButton {...props} />,
+          tabBarButton: (props) =>
+            getTabBarVisible(route) && <TabBarCustomButton {...props} />,
         })}
       />
     </Tab.Navigator>
@@ -271,6 +278,13 @@ function HomeScreenNavigator() {
       <ScreenStack.Screen
         name="CompleteSetup"
         component={CompleteSetup}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ScreenStack.Screen
+        name="ShopInfo"
+        component={ShopInfo}
         options={{
           headerShown: false,
         }}

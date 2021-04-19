@@ -94,7 +94,9 @@ const Profile = () => {
       >
         <TouchableOpacity
           style={[styles.modalTextButton]}
-          onPress={handleSignout}
+          onPress={() => {
+            setDialogVisible(false);
+          }}
         >
           <AntDesign
             name="edit"
@@ -123,11 +125,28 @@ const Profile = () => {
             <FontAwesome name="user" size={60} color={cxlxrs.black} />
           </View>
           <View style={styles.usernameContainer}>
+            <Text style={styles.adminText}>Admin</Text>
             <Text style={styles.username}>
               {user.firstName || `Ibrahim`} {user.lastName || ``}
             </Text>
           </View>
         </View>
+        {user.isProfileSetupCompleted ? (
+          <View style={styles.info}>
+            <TouchableOpacity onPress={() => navigation.navigate("Wallet")}>
+              <View style={styles.infoName}>
+                <Text style={styles.infoLightText}>Shop Name</Text>
+                <Text style={styles.infoBoldText}>{user.shopName}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("Bonus")}>
+              <View style={styles.infoId}>
+                <Text style={styles.infoLightText}>Shop Code</Text>
+                <Text style={styles.infoBoldText}>{user.shopId}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        ) : null}
         <View style={styles.settings}>
           <SettingsItemWrapper
             title={"About Stoque"}
@@ -139,9 +158,7 @@ const Profile = () => {
           {user.isProfileSetupCompleted ? (
             <SettingsItemWrapper
               title={"Shop Info"}
-              icon={
-                <AntDesign name="infocirlceo" size={20} color={cxlxrs.black} />
-              }
+              icon={<AntDesign name="isv" size={20} color={cxlxrs.black} />}
               onPress={() => navigation.navigate("ShopInfo")}
             />
           ) : null}

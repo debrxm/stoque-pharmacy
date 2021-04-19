@@ -8,20 +8,26 @@ const date = new Date(),
   year = date.getFullYear(),
   month = date.getMonth();
 
-export const firstDayOfTheMonth = Date.parse(
-  new Date(year, month, 1).toLocaleString()
-);
+export const FirstDayOfTheMonth = () =>
+  Date.parse(new Date(year, month, 1).toUTCString());
 
 const first = date.getDate() - date.getDay();
 const last = first + 6;
 
-export const firstDayOfTheWeek = Date.parse(
-  new Date(date.setDate(first)).toLocaleString()
-);
+export const FirstDayOfTheWeek = () =>
+  Date.parse(new Date(date.setDate(first)).toUTCString());
 
-export const lastDayOfTheWeek = Date.parse(
-  new Date(date.setDate(last)).toLocaleString()
-);
+export const LastDayOfTheWeek = () =>
+  Date.parse(new Date(date.setDate(last)).toUTCString());
+export const BeginingOfTheDay = () => {
+  const startOfDay = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate()
+  );
+  const timestamp = startOfDay / 1000;
+  return timestamp;
+};
 export const TransferBarcode = async (barcode, ownerId) => {
   const barcodeRef = firestore
     .collection("barcode")
@@ -31,7 +37,19 @@ export const TransferBarcode = async (barcode, ownerId) => {
   console.log(barcode, ownerId);
   await barcodeRef.set({ barcode });
 };
-
+export function Nextweek() {
+  var today = new Date();
+  var nextweek = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() - 7
+  );
+  return nextweek;
+}
+export function Yesterday() {
+  const date = new Date();
+  return date.setDate(date.getDate() - 1);
+}
 export const Wait = (timeout) => {
   return new Promise((resolve) => {
     setTimeout(resolve, timeout);

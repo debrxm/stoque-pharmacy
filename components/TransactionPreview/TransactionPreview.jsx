@@ -26,7 +26,7 @@ export default function TransactionPreview({
             </View>
           </View>
           <View style={styles.transactionTextRight}>
-            <Text style={styles.transactionId}>{id || "10ingo"}</Text>
+            <Text style={styles.transactionId}>#{id || "10ingo"}</Text>
             <Text style={styles.transactionTotalPrice}>{`₦${price ||
               "32,000"}`}</Text>
           </View>

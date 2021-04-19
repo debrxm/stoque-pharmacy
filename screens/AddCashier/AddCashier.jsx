@@ -68,9 +68,9 @@ const AddCashier = () => {
     }
     const cashierRef = firestore
       .collection("cashiers")
-      .doc(user.id)
+      .doc(`${user.shopId}`)
       .collection("cashiers")
-      .where("phone", "==", `${phone}`);
+      .where("phone", "==", phone);
     const snapshot = await cashierRef.get();
     if (snapshot.docs.length > 0) {
       setErrorMessage(

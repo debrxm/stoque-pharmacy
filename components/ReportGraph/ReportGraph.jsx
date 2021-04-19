@@ -17,7 +17,7 @@ const ReportGraph = () => {
         setIsStatsLoading(false);
         return;
       }
-      setProductSold(snapShot.data().sold);
+      setProductSold(snapShot.data().revenue);
       setIsStatsLoading(false);
     });
   };

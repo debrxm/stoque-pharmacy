@@ -9,27 +9,44 @@ import { styles } from "./styles";
 import { cxlxrs } from "../../constants/Colors";
 import { firestore } from "../../firebase/config";
 import { useSelector } from "react-redux";
+import { Yesterday } from "../../utils/helper";
 
 const Reports = () => {
   const user = useSelector(({ user }) => user.currentUser);
   const navigation = useNavigation();
-  const [hasData, setHasData] = useState(false);
+  const [hasData, setHasData] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [reportViewVisible, setReportViewVisible] = useState(false);
-  const statsRef = firestore.collection("stats").doc(user.id);
+  const [yesterday] = useState(
+    new Date(Yesterday()).toISOString().substring(0, 10)
+  );
+  const [stats, setStats] = useState({ revenue: 0, count: 0 });
   const fetchData = async () => {
-    statsRef.onSnapshot((snapShot) => {
-      if (!snapShot.exists) {
-        // setIsReportLoading(false);
-        return;
-      }
-      // setProductSold(snapShot.data().sold);
-      // setIsReportLoading(false);
+    const salesRef = firestore
+      .collection("sales")
+      .doc(user.id)
+      .collection("sales")
+      .where("day_created", "==", `${yesterday}`);
+    const snapshot = await salesRef.get();
+    if (snapshot.empty) {
+      console.log("empty");
+      setHasData(false);
+      setIsLoading(false);
+      return;
+    }
+    let revenue = 0,
+      count = 0;
+    snapshot.docs.forEach((item) => {
+      const data = item.data();
+      revenue += data.price;
+      count += data.quantity;
     });
+    setStats({ revenue, count });
+    setIsLoading(false);
   };
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [""]);
   const toggleDatePicker = () => {
     setDatePickerVisibility(!isDatePickerVisible);
   };
@@ -68,13 +85,19 @@ const Reports = () => {
           <Text style={styles.sectionLabel}>Latest Reports</Text>
 
           {hasData ? (
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() =>
+                navigation.navigate("ReportView", { timeString: yesterday })
+              }
+            >
               <View style={styles.recentReportPreview}>
                 <View style={styles.left}>
                   <Text style={styles.reportDate}>Yesterday</Text>
-                  <Text style={styles.itemSold}>{40} product sold</Text>
+                  <Text style={styles.itemSold}>
+                    {stats.count} product sold
+                  </Text>
                 </View>
-                <Text style={styles.income}>{`₦40,000`}</Text>
+                <Text style={styles.income}>₦{stats.revenue}</Text>
               </View>
             </TouchableWithoutFeedback>
           ) : (

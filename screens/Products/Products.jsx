@@ -33,7 +33,7 @@ const Products = () => {
   const [hasProduct, setHasProduct] = useState(false);
   const [scannerVisible, setScannerVisible] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isMoreLoading, setIsMoreLoading] = useState(false);
   const [lastDoc, setLastDoc] = useState(null);
   const [products, setProducts] = useState([]);
@@ -49,57 +49,50 @@ const Products = () => {
   const getProducts = async () => {
     setIsLoading(true);
 
-    const snapshot = await productsRef
-      .orderBy("created_at")
-      .limit(15)
-      .get();
+    const snapshot = await productsRef.orderBy("created_at").limit(10);
+    snapshot.onSnapshot((snapShot) => {
+      if (!snapShot.empty) {
+        setHasProduct(true);
+        let newProducts = [];
 
-    if (!snapshot.empty) {
-      setHasProduct(true);
-      let newProducts = [];
+        setLastDoc(snapShot.docs[snapShot.docs.length - 1]);
 
-      setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+        for (let i = 0; i < snapShot.docs.length; i++) {
+          newProducts.push(snapShot.docs[i].data());
+        }
 
-      for (let i = 0; i < snapshot.docs.length; i++) {
-        newProducts.push(snapshot.docs[i].data());
+        setProducts(newProducts);
+      } else {
+        setLastDoc(null);
       }
-
-      setProducts(newProducts);
-    } else {
-      setLastDoc(null);
-    }
-
+    });
     setIsLoading(false);
   };
 
   const getMore = async () => {
     if (lastDoc) {
       setIsMoreLoading(true);
-
-      setTimeout(async () => {
-        let snapshot = await productsRef
-          .orderBy("created_at")
-          .startAfter(lastDoc.data().id)
-          .limit(15)
-          .get();
-
-        if (!snapshot.empty) {
+      let snapshot = await productsRef
+        .orderBy("created_at")
+        .startAfter(lastDoc.data().created_at)
+        .limit(10);
+      snapshot.onSnapshot((snapShot) => {
+        if (!snapShot.empty) {
           let newProducts = products;
 
-          setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+          setLastDoc(snapShot.docs[snapShot.docs.length - 1]);
 
-          for (let i = 0; i < snapshot.docs.length; i++) {
-            newProducts.push(snapshot.docs[i].data());
+          for (let i = 0; i < snapShot.docs.length; i++) {
+            newProducts.push(snapShot.docs[i].data());
           }
 
           setProducts(newProducts);
-          if (snapshot.docs.length < 15) setLastDoc(null);
+          if (snapShot.docs.length < 10) setLastDoc(null);
         } else {
           setLastDoc(null);
         }
-
-        setIsMoreLoading(false);
-      }, 1000);
+      });
+      setIsMoreLoading(false);
     }
 
     onEndReachedCalledDuringMomentum = true;
@@ -154,56 +147,42 @@ const Products = () => {
           style={{ marginBottom: 10 }}
         />
       ) : hasProduct ? (
-        <>
-          <View style={styles.overview}>
-            <View style={styles.overviewMainTextsContainer}>
-              <View>
-                <Text style={styles.overviewMainTextLabel}>Total</Text>
-                <Text style={styles.overviewMainTextBold}>
-                  {products.length}
-                </Text>
-              </View>
-              <View>
-                <Text style={styles.overviewMainTextLabel}>Sold</Text>
-                <Text style={styles.overviewMainTextBold}>
-                  {products.length}
-                </Text>
-              </View>
-            </View>
-          </View>
-          <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.listContainer}>
-              <FlatList
-                data={products}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <ProductPreview data={item} />}
-                ListFooterComponent={
-                  <RenderFooter isMoreLoading={isMoreLoading} />
-                }
-                refreshControl={
-                  <RefreshControl
-                    refreshing={isLoading}
-                    onRefresh={onRefresh}
-                  />
-                }
-                contentContainerStyle={{
-                  flexGrow: 1,
-                }}
-                style={{ paddingBottom: 20 }}
-                initialNumToRender={15}
-                onEndReachedThreshold={0.1}
-                onMomentumScrollBegin={() => {
-                  onEndReachedCalledDuringMomentum = false;
-                }}
-                onEndReached={() => {
-                  if (!onEndReachedCalledDuringMomentum && !isMoreLoading) {
-                    getMore();
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={styles.listContainer}>
+            <FlatList
+              data={products}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item, index }) => (
+                <ProductPreview
+                  data={item}
+                  customStyles={
+                    index === products.length - 1 && { marginBottom: 60 }
                   }
-                }}
-              />
-            </View>
-          </SafeAreaView>
-        </>
+                />
+              )}
+              ListFooterComponent={
+                <RenderFooter isMoreLoading={isMoreLoading} />
+              }
+              refreshControl={
+                <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+              }
+              contentContainerStyle={{
+                flexGrow: 1,
+              }}
+              style={{ paddingBottom: 20 }}
+              initialNumToRender={10}
+              onEndReachedThreshold={0.1}
+              onMomentumScrollBegin={() => {
+                onEndReachedCalledDuringMomentum = false;
+              }}
+              onEndReached={() => {
+                if (!onEndReachedCalledDuringMomentum && !isMoreLoading) {
+                  getMore();
+                }
+              }}
+            />
+          </View>
+        </SafeAreaView>
       ) : (
         <View style={styles.noProduct}>
           <Text style={[styles.noDataText, styles.noProductText]}>

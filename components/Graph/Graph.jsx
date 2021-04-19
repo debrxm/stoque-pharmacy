@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Dimensions, Text, View } from "react-native";
-import { LineChart } from "react-native-chart-kit";
 import { useSelector } from "react-redux";
 import { cxlxrs } from "../../constants/Colors";
 import { FontFamily } from "../../constants/Fonts";
 import { firestore } from "../../firebase/config";
+import { FirstDayOfTheMonth, FirstDayOfTheWeek } from "../../utils/helper";
 import StatFilterButtons from "../StatFilterButtons/StatFilterButtons";
 
-const Graph = ({ filter, setFilter, title, monthOrderCount }) => {
+const Graph = ({ filter, setFilter, title }) => {
   const user = useSelector(({ user }) => user.currentUser);
   const [productSold, setProductSold] = useState(0);
+  const [monthOrderCount, setMonthOrderCount] = useState(0);
+  const [weekOrderCount, setWeekOrderCount] = useState(0);
   const [isStatsLoading, setIsStatsLoading] = useState(true);
+  const [isSalesLoading, setIsSalesLoading] = useState(true);
   const statsRef = firestore.collection("stats").doc(user.id);
   const fetchData = async () => {
     statsRef.onSnapshot((snapShot) => {
@@ -21,6 +24,45 @@ const Graph = ({ filter, setFilter, title, monthOrderCount }) => {
       setProductSold(snapShot.data().sold);
       setIsStatsLoading(false);
     });
+    const salesRef = firestore
+      .collection("sales")
+      .doc(user.id)
+      .collection("sales");
+    salesRef
+      .where("created_at", ">", FirstDayOfTheWeek())
+      .onSnapshot((snapShot) => {
+        if (snapShot.empty) {
+          setIsSalesLoading(false);
+          return;
+        }
+        let producCount = 0;
+        const size = snapShot.docs.length - 1;
+        snapShot.docs.forEach((item, index) => {
+          producCount += item.data().quantity;
+          if (index === size) {
+            setWeekOrderCount(producCount);
+          }
+        });
+        setIsSalesLoading(false);
+      });
+    salesRef
+      .where("created_at", ">", FirstDayOfTheMonth())
+      .onSnapshot((snapShot) => {
+        if (snapShot.empty) {
+          setIsSalesLoading(false);
+          return;
+        }
+        let producCount = 0;
+        const size = snapShot.docs.length - 1;
+        snapShot.docs.forEach((item, index) => {
+          producCount += item.data().quantity;
+
+          if (index === size) {
+            setMonthOrderCount(producCount);
+          }
+        });
+        setIsSalesLoading(false);
+      });
   };
   useEffect(() => {
     fetchData();
@@ -104,38 +146,30 @@ const Graph = ({ filter, setFilter, title, monthOrderCount }) => {
         ) : (
           <>
             {filter === "thisWeek" ? (
-              <LineChart
-                data={{
-                  labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                  datasets: [
-                    {
-                      data: [0, 0, 0, 0, 0, 0, 0],
-                    },
-                  ],
-                }}
-                width={Dimensions.get("screen").width - 20}
-                height={200}
-                chartConfig={{
-                  backgroundColor: cxlxrs.black,
-                  backgroundGradientFrom: cxlxrs.black,
-                  backgroundGradientTo: cxlxrs.black,
-                  decimalPlaces: 0,
-                  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                  style: {
-                    borderRadius: 10,
-                  },
-                }}
-                bezier
+              <View
                 style={{
-                  borderRadius: 10,
-                  paddingVertical: 6,
-                  backgroundColor: cxlxrs.black,
+                  // flex: 1,
+                  height: 150,
+                  width: Dimensions.get("screen").width - 20,
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-              />
+              >
+                <Text
+                  style={{
+                    color: cxlxrs.black,
+                    fontSize: 50,
+                    fontWeight: "bold",
+                    marginBottom: 20,
+                  }}
+                >
+                  {weekOrderCount}
+                </Text>
+              </View>
             ) : (
               <View
                 style={{
-                  height: 200,
+                  height: 150,
                   width: Dimensions.get("screen").width - 20,
                   justifyContent: "center",
                   alignItems: "center",

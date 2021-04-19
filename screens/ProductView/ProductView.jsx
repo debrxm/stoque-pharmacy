@@ -38,7 +38,7 @@ const ProductView = () => {
   const [profit, setProfit] = useState(data.profit);
   const [category, setCategory] = useState(data.category);
   const [expireDate, setExpireDate] = useState(
-    new Date(data.expireDate !== "" ? data.expireDate : Date.now())
+    new Date(data.expireDate ? data.expireDate : Date.now())
       .toISOString()
       .substring(0, 10)
   );
@@ -244,14 +244,16 @@ const ProductView = () => {
             containerStyle={{ width: "35%" }}
           />
         </View>
-        <View style={[styles.dateSelectorContainer]}>
-          <Text style={styles.dateSelectorLabel}>Expiration date</Text>
-          <AppButton
-            title={expireDate || Date.now().toLocaleString()}
-            customStyle={styles.dateSelector}
-            textStyle={styles.dateSelectorText}
-          />
-        </View>
+        {data.expireDate ? (
+          <View style={[styles.dateSelectorContainer]}>
+            <Text style={styles.dateSelectorLabel}>Expiration date</Text>
+            <AppButton
+              title={expireDate || Date.now().toLocaleString()}
+              customStyle={styles.dateSelector}
+              textStyle={styles.dateSelectorText}
+            />
+          </View>
+        ) : null}
         {successful ? (
           <View style={styles.centerContainer}>
             <Text style={styles.successtext}>Product Added!</Text>
