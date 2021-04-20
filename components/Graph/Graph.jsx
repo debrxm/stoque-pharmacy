@@ -146,46 +146,9 @@ const Graph = ({ filter, setFilter, title }) => {
         ) : (
           <>
             {filter === "thisWeek" ? (
-              <View
-                style={{
-                  // flex: 1,
-                  height: 150,
-                  width: Dimensions.get("screen").width - 20,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    color: cxlxrs.black,
-                    fontSize: 50,
-                    fontWeight: "bold",
-                    marginBottom: 20,
-                  }}
-                >
-                  {weekOrderCount}
-                </Text>
-              </View>
+              <ChartDisplay count={weekOrderCount} duration="week" />
             ) : (
-              <View
-                style={{
-                  height: 150,
-                  width: Dimensions.get("screen").width - 20,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    color: cxlxrs.black,
-                    fontSize: 50,
-                    fontWeight: "bold",
-                    marginBottom: 20,
-                  }}
-                >
-                  {monthOrderCount}
-                </Text>
-              </View>
+              <ChartDisplay count={monthOrderCount} duration="month" />
             )}
           </>
         )}
@@ -193,5 +156,42 @@ const Graph = ({ filter, setFilter, title }) => {
     </View>
   );
 };
+
+function ChartDisplay({ count, duration }) {
+  return (
+    <View
+      style={{
+        height: 140,
+        width: Dimensions.get("screen").width - 20,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 40,
+          fontWeight: "bold",
+          marginBottom: 20,
+          fontFamily: FontFamily.FiraMedium,
+          color: cxlxrs.textColor,
+        }}
+      >
+        {count}
+      </Text>
+      <Text
+        style={{
+          color: cxlxrs.black,
+          fontFamily: FontFamily.FiraRegular,
+          fontSize: 13,
+          fontWeight: "bold",
+          marginBottom: 20,
+          letterSpacing: 2,
+        }}
+      >
+        {`Product${count > 1 && "s"} already sold this ${duration}`}
+      </Text>
+    </View>
+  );
+}
 
 export default Graph;

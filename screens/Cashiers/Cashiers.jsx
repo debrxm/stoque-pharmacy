@@ -16,6 +16,7 @@ import AppButton from "../../components/AppButton/AppButton";
 import { cxlxrs } from "../../constants/Colors";
 
 import { styles } from "./styles";
+import CashierPreview from "../../components/CashierPreview/CashierPreview";
 
 const Cashiers = () => {
   let onEndReachedCalledDuringMomentum = false;
@@ -81,7 +82,7 @@ const Cashiers = () => {
               <FlatList
                 data={cashiers}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <Text>{item.name}</Text>}
+                renderItem={({ item }) => <CashierPreview data={item} />}
                 refreshControl={
                   <RefreshControl
                     refreshing={isLoading}

@@ -22,11 +22,12 @@ import CompleteSetup from "../screens/CompleteSetup/CompleteSetup";
 import ShopInfo from "../screens/ShopInfo/ShopInfo";
 import About from "../screens/About/About";
 import Cashiers from "../screens/Cashiers/Cashiers";
+import AddCashier from "../screens/AddCashier/AddCashier";
+import CashierView from "../screens/CashierView/CashierView";
 import Products from "../screens/Products/Products";
 import AddCategory from "../screens/AddCategory/AddCategory";
 import AddProduct from "../screens/AddProduct/AddProduct";
 import ProductView from "../screens/ProductView/ProductView";
-import AddCashier from "../screens/AddCashier/AddCashier";
 import Reports from "../screens/Reports/Reports";
 import ReportView from "../screens/ReportView/ReportView";
 
@@ -40,11 +41,9 @@ const TabBarCustomButton = ({
   accessibilityState,
   children,
   onPress,
-  hidden,
 }) => {
   const isSelected = accessibilityState.selected;
-  const route = accessibilityLabel.split(",")[0];
-  if (isSelected && !hidden) {
+  if (isSelected) {
     return (
       <View style={{ flex: 1, alignItems: "center" }}>
         <View
@@ -130,9 +129,9 @@ function getTabBarVisible(route) {
     case "AddCashier":
       return false;
       break;
-    // case "Products":
-    //   return false;
-    //   break;
+    case "CashierView":
+      return false;
+      break;
     case "AddCategory":
       return false;
       break;
@@ -250,6 +249,13 @@ function HomeScreenNavigator() {
       <ScreenStack.Screen
         name="AddCashier"
         component={AddCashier}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ScreenStack.Screen
+        name="CashierView"
+        component={CashierView}
         options={{
           headerShown: false,
         }}

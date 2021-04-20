@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
     height: 20,
     width: "100%",
     justifyContent: "center",
-    borderRadius: 0,
+    borderRadius: 30,
   },
   customErrorTextStyles: {
     color: "#ffffff",

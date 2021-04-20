@@ -14,7 +14,7 @@ const wait = (timeout) => {
   });
 };
 
-const ReAuth = () => {
+const ReAuth = ({ onAuthentic }) => {
   const user = useSelector((state) => state.user.currentUser);
   const [currentPassword, setCurrentPassword] = useState("");
   const [toggleShowCurrentPassword, setToggleShowCurrentPassword] = useState(
@@ -23,8 +23,7 @@ const ReAuth = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const onChangePassword = async () => {
+  const onReAuth = async () => {
     if (currentPassword.trim() === "") {
       setErrorMessage("Please enter your password");
       return;
@@ -39,25 +38,11 @@ const ReAuth = () => {
         credential
       );
       if (reAuth.user) {
-        currentUserAuth
-          .updatePassword(password)
-          .then(function() {
-            setCurrentPassword("");
-            setSuccessMessage("Password changed");
-            setLoading(false);
-            wait(2000).then(async () => {
-              setSuccessMessage("");
-            });
-          })
-          .catch(function(error) {
-            setErrorMessage("Something went wrong");
-            console.log(result);
-            setLoading(false);
-          });
+        onAuthentic();
       }
     } catch (err) {
       setErrorMessage("Current password is incorrect");
-      setErrorMessage(err.message);
+      setErrorMessage("Password is incorrect");
       setLoading(false);
       return;
     }
@@ -129,7 +114,7 @@ const ReAuth = () => {
               }}
             >
               <AppButton
-                onPress={onChangePassword}
+                onPress={onReAuth}
                 title={"Confirm"}
                 customStyle={{
                   width: "50%",

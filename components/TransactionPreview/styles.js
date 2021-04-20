@@ -13,9 +13,8 @@ export const styles = StyleSheet.create({
     elevation: 2,
     marginBottom: 20,
   },
-  transactionIcon: { width: 20 },
   transactionTexts: {
-    width: Dimensions.get("screen").width - 40,
+    width: Dimensions.get("screen").width - 80,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
