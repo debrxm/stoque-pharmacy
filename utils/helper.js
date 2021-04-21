@@ -1,4 +1,66 @@
 import { firestore } from "../firebase/config";
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
+
+export async function SchedulePushNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "You've got mail! 📬",
+      body: "Here is the notification body",
+      data: { data: "goes here" },
+    },
+    trigger: { seconds: 2 },
+  });
+}
+
+export async function RegisterForPushNotificationsAsync() {
+  let token;
+  if (Constants.isDevice) {
+    const {
+      status: existingStatus,
+    } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  return token;
+}
+export const SendNotification = (pushNotificationData) => {
+  const { body, token, title } = pushNotificationData;
+  fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      channelId: pushNotificationData.channelId || "ActivitiesScreen",
+      to: token,
+      sound: "default",
+      title,
+      body,
+    }),
+  });
+};
 
 export const GenerateRandomNDigits = (n) => {
   return Math.floor(Math.random() * (9 * Math.pow(10, n))) + Math.pow(10, n);
@@ -37,6 +99,28 @@ export const TransferBarcode = async (barcode, ownerId) => {
   console.log(barcode, ownerId);
   await barcodeRef.set({ barcode });
 };
+export const BatchWrite = async (productsArr, shopData, ownerId) => {
+  const batch = firestore.batch();
+  productsArr.forEach((item) => {
+    const allProductRef = firestore.doc(`all_products/${item.id}`);
+    batch.set(allProductRef, {
+      ...item,
+      shopId: shopData.shopId,
+      ownerId,
+      shopData,
+    });
+  });
+  try {
+    await batch.commit();
+    console.log("Done");
+  } catch (error) {
+    console.log(
+      "An error occured while trying to delete cashier",
+      error.message
+    );
+  }
+};
+
 export function Nextweek() {
   var today = new Date();
   var nextweek = new Date(
@@ -50,6 +134,12 @@ export function Yesterday() {
   const date = new Date();
   return date.setDate(date.getDate() - 1);
 }
+export const StartOfToday = () => {
+  const d = new Date();
+  d.setUTCHours(0, 0, 0, 0);
+  const timeString = +d;
+  return timeString;
+};
 export const Wait = (timeout) => {
   return new Promise((resolve) => {
     setTimeout(resolve, timeout);
@@ -69,3 +159,16 @@ export const GetExpirationDate = (duration) => {
     subExpireTimestamp: new Date(date).getTime(),
   };
 };
+export function TimeDifference(date1, date2) {
+  let difference = date1.getTime() - date2.getTime();
+
+  const daysDifference = Math.floor(difference / 1000 / 60 / 60 / 24);
+  difference -= daysDifference * 1000 * 60 * 60 * 24;
+
+  const hoursDifference = Math.floor(difference / 1000 / 60 / 60);
+  difference -= hoursDifference * 1000 * 60 * 60;
+  return {
+    days: daysDifference,
+    hours: hoursDifference,
+  };
+}

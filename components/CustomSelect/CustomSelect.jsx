@@ -5,11 +5,19 @@ import { useSelector } from "react-redux";
 import RNPickerSelect from "react-native-picker-select";
 import { FontFamily } from "../../constants/Fonts";
 import { styles } from "./styles";
-const CustomSelect = ({ options, value, onValueChange, label, labelStyle }) => {
+const CustomSelect = ({
+  disabled,
+  options,
+  value,
+  onValueChange,
+  label,
+  labelStyle,
+  containerStyle,
+}) => {
   const user = useSelector(({ user }) => user.currentUser);
   useEffect(() => {}, [value]);
   return (
-    <View style={[styles.selectContainer]}>
+    <View style={[styles.selectContainer, { ...containerStyle }]}>
       {label ? (
         <Text style={[styles.label, { ...labelStyle }]}>{label}</Text>
       ) : null}
@@ -17,6 +25,7 @@ const CustomSelect = ({ options, value, onValueChange, label, labelStyle }) => {
         onValueChange={(val) => onValueChange(val)}
         items={options}
         style={pickerSelectStyles}
+        disabled={disabled}
         useNativeAndroidPickerStyle={false}
         Icon={() => (
           <AntDesign

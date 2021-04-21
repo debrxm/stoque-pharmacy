@@ -30,6 +30,7 @@ import AddProduct from "../screens/AddProduct/AddProduct";
 import ProductView from "../screens/ProductView/ProductView";
 import Reports from "../screens/Reports/Reports";
 import ReportView from "../screens/ReportView/ReportView";
+import License from "../screens/License/License";
 
 import { Icons } from "../constants/icons";
 import { cxlxrs } from "../constants/Colors";
@@ -139,6 +140,9 @@ function getTabBarVisible(route) {
       return false;
       break;
     case "ProductView":
+      return false;
+      break;
+    case "License":
       return false;
       break;
     case "About":
@@ -291,6 +295,13 @@ function HomeScreenNavigator() {
       <ScreenStack.Screen
         name="ShopInfo"
         component={ShopInfo}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ScreenStack.Screen
+        name="License"
+        component={License}
         options={{
           headerShown: false,
         }}

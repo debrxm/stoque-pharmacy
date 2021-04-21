@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "297460588813",
+    "project_id": "stoque-pharmacy",
+    "storage_bucket": "stoque-pharmacy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297460588813:android:c930df11d75ce5a5811044",
+        "android_client_info": {
+          "package_name": "com.ozzycodes.stoque_ph"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "297460588813-g95o5f7v70qon8bsd5hjcoaji5vjjrof.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBU0Vy-KWd4aVhrooPEkTeDUQ7nqvMUVoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "297460588813-g95o5f7v70qon8bsd5hjcoaji5vjjrof.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

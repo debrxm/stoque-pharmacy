@@ -1,8 +1,14 @@
-import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Feather,
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { View, Image, Share, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import HelperDialog from "../../components/HelperDialog/HelperDialog";
 import { styles } from "./styles";
 import { cxlxrs } from "../../constants/Colors";
@@ -24,41 +30,7 @@ const Profile = () => {
       dispatch(setCurrentUser(null));
     });
   };
-  const onShare = async () => {
-    const uri = "../../assets/logos/logo.png";
 
-    Share.share(
-      {
-        title: "BoundlessInvestment",
-        url: uri,
-        message: `Hey there, I'm investing with BoundlessInvestment. Join me! Download it here:https://www.boundlessservicesng.com`,
-      },
-      {
-        excludedActivityTypes: [
-          // 'com.apple.UIKit.activity.PostToWeibo',
-          "com.apple.UIKit.activity.Print",
-          // "com.apple.UIKit.activity.CopyToPasteboard",
-          // 'com.apple.UIKit.activity.AssignToContact',
-          "com.apple.UIKit.activity.SaveToCameraRoll",
-          "com.apple.UIKit.activity.AddToReadingList",
-          // 'com.apple.UIKit.activity.PostToFlickr',
-          // 'com.apple.UIKit.activity.PostToVimeo',
-          // 'com.apple.UIKit.activity.PostToTencentWeibo',
-          "com.apple.UIKit.activity.AirDrop",
-          "com.apple.UIKit.activity.OpenInIBooks",
-          "com.apple.UIKit.activity.MarkupAsPDF",
-          "com.apple.reminders.RemindersEditorExtension",
-          // 'com.apple.mobilenotes.SharingExtension',
-          // 'com.apple.mobileslideshow.StreamShareService',
-          // 'com.linkedin.LinkedIn.ShareExtension',
-          // 'pinterest.ShareExtension',
-          // 'com.google.GooglePlus.ShareExtension',
-          // 'com.tumblr.tumblr.Share-With-Tumblr',
-          // 'net.whatsapp.WhatsApp.ShareExtension', //WhatsApp
-        ],
-      }
-    );
-  };
   return (
     <>
       <View style={styles.header}>
@@ -162,11 +134,19 @@ const Profile = () => {
               onPress={() => navigation.navigate("ShopInfo")}
             />
           ) : null}
-          <SettingsItemWrapper
-            title={"Share the app"}
-            icon={<Feather name="share-2" size={20} color={cxlxrs.black} />}
-            onPress={onShare}
-          />
+          {user.isProfileSetupCompleted ? (
+            <SettingsItemWrapper
+              title={"License"}
+              icon={
+                <MaterialCommunityIcons
+                  name="license"
+                  size={20}
+                  color={cxlxrs.black}
+                />
+              }
+              onPress={() => navigation.navigate("License")}
+            />
+          ) : null}
         </View>
         {!user.isProfileSetupCompleted ? (
           <View style={styles.completeSetup}>

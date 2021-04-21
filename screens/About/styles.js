@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 40,
     paddingBottom: 15,
-    paddingLeft: 20,
+    paddingLeft: 10,
     paddingRight: 20,
     minHeight: 80,
     backgroundColor: "#ffffff",

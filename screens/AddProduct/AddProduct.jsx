@@ -73,8 +73,15 @@ const AddProduct = () => {
     Wait(6000).then(() => setSuccessful(false));
   }, []);
   const onCreateProduct = async (productData) => {
+    const shopData = {
+      shopId: user.shopId,
+      shopName: user.shopName,
+      phone: user.phone,
+      whatsapp: user.whatsapp,
+      shopAddress: user.shopAddress,
+    };
     try {
-      await CreateProduct(productData, user.id);
+      await CreateProduct(productData, shopData, user.id);
       onSuccessful();
       setBarcode("");
       setProductName("");

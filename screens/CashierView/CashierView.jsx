@@ -25,6 +25,7 @@ import { GenerateRandomNDigits } from "../../utils/helper";
 import { firestore } from "../../firebase/config";
 import HelperDialog from "../../components/HelperDialog/HelperDialog";
 import ReAuth from "../../components/ReAuth/ReAuth";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
 
 const AddCashier = () => {
   const user = useSelector(({ user }) => user.currentUser);
@@ -32,6 +33,10 @@ const AddCashier = () => {
   const route = useRoute();
   const data = route.params.data;
   const [passcode, setPasscode] = useState(data.passcode);
+  const [writeAccess, setWriteAccess] = useState({
+    label: "True",
+    value: true,
+  });
   const [cashierName, setCashierName] = useState(data.name);
   const [address, setAddress] = useState(data.address);
   const [phone, setPhone] = useState(data.phone);
@@ -195,6 +200,25 @@ const AddCashier = () => {
           keyType="numeric"
         />
         <View style={{ height: 20 }}></View>
+        {/* <CustomSelect
+          label="Write Permission"
+          labelStyle={{
+            textAlign: "left",
+            margin: 0,
+            marginBottom: 10,
+            fontSize: 12,
+            color: cxlxrs.textColor,
+          }}
+          disabled={editing}
+          options={[
+            { label: "True", value: true },
+            { label: "False", value: false },
+          ]}
+          containerStyle={{ width: "100%" }}
+          value={writeAccess}
+          onValueChange={setWriteAccess}
+        />
+        <View style={{ height: 20 }}></View> */}
         <View style={[styles.flexGrouping, { marginBottom: 30 }]}>
           <View style={{ width: "79%" }}>
             <Text style={styles.dateSelectorLabel}>Passcode</Text>

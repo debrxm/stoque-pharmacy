@@ -23,6 +23,7 @@ import HelperDialog from "../../components/HelperDialog/HelperDialog";
 import ReAuth from "../../components/ReAuth/ReAuth";
 
 import { styles } from "./styles";
+import { OnArchiveProduct, OnDeleteProduct } from "../../firebase/firestore";
 const ProductView = () => {
   const user = useSelector(({ user }) => user.currentUser);
   const route = useRoute();
@@ -46,6 +47,7 @@ const ProductView = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [notification, setNotification] = useState(`${data.notification}`);
   const [loading, setLoading] = useState(false);
+  const [isAuthentic, setIsAuthentic] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successful, setSuccessful] = useState(false);
   const refactorCode = useCallback(() => {
@@ -86,11 +88,41 @@ const ProductView = () => {
     }
   };
   const onRestocking = () => {
-    if (restocking && !loading) {
+    if (restocking && !loading && isAuthentic) {
       restockProduct();
     } else {
+      if (isAuthentic) {
+        setRestocking(true);
+      } else {
+        setActionType("restock");
+        setDialogVisible(true);
+      }
+    }
+  };
+  const Next = () => {
+    setIsAuthentic(true);
+    if (actionType === "restock") {
       setRestocking(true);
     }
+    if (actionType === "archive") {
+      onArchive();
+    }
+    if (actionType === "delete") {
+      onDelete();
+    }
+    setDialogVisible(false);
+  };
+  const onArchive = () => {
+    setActionType("archive");
+    isAuthentic
+      ? OnArchiveProduct(data, user.shopId, navigation)
+      : setDialogVisible(true);
+  };
+  const onDelete = () => {
+    setActionType("delete");
+    isAuthentic
+      ? OnDeleteProduct(data.id, user.shopId)
+      : setDialogVisible(true);
   };
   return (
     <>
@@ -308,19 +340,13 @@ const ProductView = () => {
               <>
                 <TouchableOpacity
                   style={styles.iconContainer}
-                  onPress={() => {
-                    setActionType("archive");
-                    setDialogVisible(true);
-                  }}
+                  onPress={onArchive}
                 >
                   <MaterialIcons name="archive" size={28} color="black" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.iconContainer}
-                  onPress={() => {
-                    setActionType("delete");
-                    setDialogVisible(true);
-                  }}
+                  onPress={onDelete}
                 >
                   <Ionicons
                     name="trash-bin-outline"
@@ -333,13 +359,14 @@ const ProductView = () => {
           </View>
         )}
       </View>
+
       <HelperDialog
         visible={dialogVisible}
         setDialogVisible={setDialogVisible}
-        // title={"More"}
+        title={"Give Permission"}
         noTitle
       >
-        {actionType === "delete" && <ReAuth />}
+        <ReAuth onAuthentic={Next} />
       </HelperDialog>
     </>
   );

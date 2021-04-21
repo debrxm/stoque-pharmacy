@@ -23,6 +23,7 @@ import ProductPreview from "../../components/ProductPreview/ProductPreview";
 import Scanner from "../../components/Scanner/Scanner";
 import { cxlxrs } from "../../constants/Colors";
 import { firestore } from "../../firebase/config";
+import { BatchWrite } from "../../utils/helper";
 
 import { styles } from "./styles";
 

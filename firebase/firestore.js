@@ -1,3 +1,4 @@
+import { SendNotification } from "../utils/helper";
 import { firestore } from "./config";
 
 export const CreateCategory = async (data) => {
@@ -16,10 +17,19 @@ export const CreateCategory = async (data) => {
     console.log("error creating category", error.message);
   }
 };
-export const CreateProduct = async (data, ownerId) => {
+export const CreateProduct = async (data, shopData, ownerId) => {
+  const batch = firestore.batch();
   const { id } = data;
   const productRef = firestore.doc(`products/${ownerId}/products/${id}`);
+  const allProductRef = firestore.doc(`all_products/${id}`);
+  batch.set(productRef, data).set(allProductRef, {
+    ...data,
+    shopId: shopData.shopId,
+    ownerId,
+    shopData,
+  });
   try {
+    await batch.commit();
     await productRef.set(data);
   } catch (error) {
     console.log("error creating category", error.message);
@@ -83,5 +93,27 @@ export const OnDeleteProduct = async (id, ownerId) => {
       "An error occured while trying to delete cashier",
       error.message
     );
+  }
+};
+
+export const UpdateNotification = (
+  ownerId,
+  notificationData,
+  pushNotificationData
+) => {
+  const notificationRef = firestore
+    .collection("notifications")
+    .doc(ownerId)
+    .collection("notifications")
+    .doc();
+  try {
+    notificationRef.set({
+      ...notificationData,
+      timestamp: Date.now(),
+      viewed: false,
+    });
+    SendNotification(pushNotificationData);
+  } catch (error) {
+    console.log(error);
   }
 };

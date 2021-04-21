@@ -2,14 +2,21 @@ import React from "react";
 import "react-native-get-random-values";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./redux/store";
+import * as Notifications from "expo-notifications";
 import { Platform, InteractionManager } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import { useFonts } from "expo-font";
 import Navigation from "./navigation";
-
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 export default function App() {
   const [isLoaded] = useFonts({
     "FiraCode-Bold": require("./assets/fonts/FiraCode-Bold.ttf"),
@@ -77,9 +84,9 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <Provider store={store}>
-          {/* <PersistGate persistor={persistor}> */}
-          <Navigation colorScheme={colorScheme} />
-          {/* </PersistGate> */}
+          <PersistGate persistor={persistor}>
+            <Navigation colorScheme={colorScheme} />
+          </PersistGate>
         </Provider>
       </SafeAreaProvider>
     );
