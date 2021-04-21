@@ -31,6 +31,7 @@ import ProductView from "../screens/ProductView/ProductView";
 import Reports from "../screens/Reports/Reports";
 import ReportView from "../screens/ReportView/ReportView";
 import License from "../screens/License/License";
+import RenewLicense from "../screens/RenewLicense/RenewLicense";
 import ShoppingList from "../screens/ShoppingList/ShoppingList";
 import ArchivedCashiers from "../screens/ArchivedCashiers/ArchivedCashiers";
 import ArchivedProducts from "../screens/ArchivedProducts/ArchivedProducts";
@@ -146,6 +147,9 @@ function getTabBarVisible(route) {
       return false;
       break;
     case "License":
+      return false;
+      break;
+    case "RenewLicense":
       return false;
       break;
     case "ShoppingList":
@@ -314,6 +318,13 @@ function HomeScreenNavigator() {
       <ScreenStack.Screen
         name="License"
         component={License}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ScreenStack.Screen
+        name="RenewLicense"
+        children={() => <RenewLicense type="renew" canClose />}
         options={{
           headerShown: false,
         }}

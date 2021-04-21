@@ -53,7 +53,7 @@ export const SendNotification = (pushNotificationData) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      channelId: pushNotificationData.channelId || "ActivitiesScreen",
+      channelId: pushNotificationData.channelId || "defalt",
       to: token,
       sound: "default",
       title,

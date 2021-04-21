@@ -45,7 +45,8 @@ export const CreateEmployee = async (data) => {
   }
 };
 export const onAddSubscription = async (data) => {
-  const { userId, subExpireDate, subExpireTimestamp } = data;
+  const { userId, subExpireDate, subExpireTimestamp, token } = data;
+  const message = `Subscription will expire on ${subExpireDate}`;
   const userRef = firestore.doc(`users/${userId}`);
   try {
     await userRef.update({
@@ -54,6 +55,11 @@ export const onAddSubscription = async (data) => {
       subExpireDate,
       subExpireTimestamp,
     });
+    UpdateNotification(
+      userId,
+      { title: data.message, message },
+      { token, channelId: "license", title: data.message, body: message }
+    );
   } catch (error) {
     console.log("error creating shop", error.message);
   }
@@ -109,7 +115,7 @@ export const UpdateNotification = (
   try {
     notificationRef.set({
       ...notificationData,
-      timestamp: Date.now(),
+      created_at: Date.now(),
       viewed: false,
     });
     SendNotification(pushNotificationData);

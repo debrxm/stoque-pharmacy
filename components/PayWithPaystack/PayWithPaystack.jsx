@@ -10,7 +10,7 @@ import { FontFamily } from "../../constants/Fonts";
 import { onAddSubscription } from "../../firebase/firestore";
 import { cxlxrs } from "../../constants/Colors";
 
-const PayWithPaystack = ({ amount, expireDate, label, disabled }) => {
+const PayWithPaystack = ({ amount, expireDate, label, disabled, message }) => {
   const user = useSelector(({ user }) => user.currentUser);
   const childRef = useRef();
   const [cancel, setCancel] = useState("");
@@ -18,7 +18,12 @@ const PayWithPaystack = ({ amount, expireDate, label, disabled }) => {
 
   const updateSubscription = async () => {
     try {
-      onAddSubscription({ userId: user.id, ...expireDate });
+      onAddSubscription({
+        userId: user.id,
+        ...expireDate,
+        message,
+        token: user.notificationToken,
+      });
       // `Transaction completed, wallet has been credited with ${amount}`
     } catch (err) {
       // "Ooops an error occured wallet no funded" + " " + err,

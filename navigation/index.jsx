@@ -30,15 +30,14 @@ function Navigation({ colorScheme }) {
         userRef.onSnapshot(async (snapShot) => {
           const data = { id: snapShot.id, ...snapShot.data() };
           dispatch(setCurrentUser(data));
-
           const notificationRef = await firestore
             .collection("notifications")
             .doc(snapShot.id)
-            .collection("feedItems")
+            .collection("notifications")
             .where("viewed", "==", false);
           notificationRef.onSnapshot(async (snapShot) => {
             if (snapShot.size > 0) {
-              // dispatch(toggleHasNoty(true));
+              dispatch(toggleHasNoty(true));
             }
           });
         });
@@ -83,10 +82,9 @@ function Navigation({ colorScheme }) {
   }, [""]);
 
   const renderer = () => {
-    const subExpired =
-      new Date(Date.now()).getTime() >= currentUser.subExpireDate;
-    if (currentUser.hasSubcribedBefore && subExpired) {
-      return <LicenseNavigator type="renew" />;
+    if (currentUser.hasSubcribedBefore && currentUser.subExpireTimestamp) {
+      const subExpired = Date.now() >= currentUser.subExpireTimestamp;
+      return subExpired ? <LicenseNavigator type="renew" /> : <RootNavigator />;
     } else if (!currentUser.hasSubcribedBefore) {
       return <LicenseNavigator type="subscribe" />;
     } else {

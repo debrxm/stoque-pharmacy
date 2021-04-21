@@ -21,6 +21,7 @@ import AppButton from "../../components/AppButton/AppButton";
 import HelperDialog from "../../components/HelperDialog/HelperDialog";
 import ProductPreview from "../../components/ProductPreview/ProductPreview";
 import Scanner from "../../components/Scanner/Scanner";
+import SearchProduct from "../../components/SearchProduct/SearchProduct";
 import { cxlxrs } from "../../constants/Colors";
 import { firestore } from "../../firebase/config";
 import { BatchWrite } from "../../utils/helper";
@@ -33,6 +34,7 @@ const Products = () => {
   const navigation = useNavigation();
   const [hasProduct, setHasProduct] = useState(false);
   const [scannerVisible, setScannerVisible] = useState(false);
+  const [searchVisible, setSearchVisible] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isMoreLoading, setIsMoreLoading] = useState(false);
@@ -122,7 +124,7 @@ const Products = () => {
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => setSearchVisible(true)}>
             <View
               style={{
                 flexDirection: "row",
@@ -140,6 +142,10 @@ const Products = () => {
         scannerVisible={scannerVisible}
         setScannerVisible={setScannerVisible}
         quickScan
+      />
+      <SearchProduct
+        searchVisible={searchVisible}
+        setSearchVisible={setSearchVisible}
       />
       {isLoading ? (
         <ActivityIndicator
