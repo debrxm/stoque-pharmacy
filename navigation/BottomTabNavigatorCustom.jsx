@@ -31,6 +31,9 @@ import ProductView from "../screens/ProductView/ProductView";
 import Reports from "../screens/Reports/Reports";
 import ReportView from "../screens/ReportView/ReportView";
 import License from "../screens/License/License";
+import ShoppingList from "../screens/ShoppingList/ShoppingList";
+import ArchivedCashiers from "../screens/ArchivedCashiers/ArchivedCashiers";
+import ArchivedProducts from "../screens/ArchivedProducts/ArchivedProducts";
 
 import { Icons } from "../constants/icons";
 import { cxlxrs } from "../constants/Colors";
@@ -143,6 +146,15 @@ function getTabBarVisible(route) {
       return false;
       break;
     case "License":
+      return false;
+      break;
+    case "ShoppingList":
+      return false;
+      break;
+    case "ArchivedCashiers":
+      return false;
+      break;
+    case "ArchivedProducts":
       return false;
       break;
     case "About":
@@ -302,6 +314,27 @@ function HomeScreenNavigator() {
       <ScreenStack.Screen
         name="License"
         component={License}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ScreenStack.Screen
+        name="ShoppingList"
+        component={ShoppingList}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ScreenStack.Screen
+        name="ArchivedCashiers"
+        component={ArchivedCashiers}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ScreenStack.Screen
+        name="ArchivedProducts"
+        component={ArchivedProducts}
         options={{
           headerShown: false,
         }}

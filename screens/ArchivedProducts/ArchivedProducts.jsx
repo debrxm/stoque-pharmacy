@@ -12,50 +12,49 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import { firestore } from "../../firebase/config";
-import AppButton from "../../components/AppButton/AppButton";
+import ProductPreview from "../../components/ProductPreview/ProductPreview";
 import { cxlxrs } from "../../constants/Colors";
 
 import { styles } from "./styles";
-import CashierPreview from "../../components/CashierPreview/CashierPreview";
 
-const Cashiers = () => {
+const ArchivedProducts = () => {
   const user = useSelector(({ user }) => user.currentUser);
   const navigation = useNavigation();
-  const [hasCashier, setHasCashier] = useState(false);
+  const [hasProduct, setHasProduct] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [cashiers, setCashiers] = useState([]);
-  const cashiersRef = firestore
-    .collection("cashiers")
-    .doc(`${user.shopId}`)
-    .collection("cashiers");
+  const [products, setProducts] = useState([]);
+  const productsRef = firestore
+    .collection("archived_products")
+    .doc(`${user.id}`)
+    .collection("archived_products");
   const onRefresh = () => {
     setTimeout(() => {
-      getCashiers();
+      getProducts();
     }, 1000);
   };
-  const getCashiers = async () => {
+  const getProducts = async () => {
     setIsLoading(true);
 
-    await cashiersRef.onSnapshot((snapshot) => {
+    await productsRef.onSnapshot((snapshot) => {
       if (!snapshot.empty) {
-        setHasCashier(true);
-        let newCashiers = [];
+        setHasProduct(true);
+        let newProducts = [];
         for (let i = 0; i < snapshot.docs.length; i++) {
-          newCashiers.push(snapshot.docs[i].data());
+          newProducts.push(snapshot.docs[i].data());
         }
-        setCashiers(newCashiers);
+        setProducts(newProducts);
       }
     });
     setIsLoading(false);
   };
   useEffect(() => {
-    getCashiers();
+    getProducts();
   }, [""]);
 
   return (
     <>
       <View style={styles.header}>
-        <Text style={styles.routeTitle}>Cashiers</Text>
+        <Text style={styles.routeTitle}>Products</Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}></View>
       </View>
       {isLoading ? (
@@ -64,14 +63,14 @@ const Cashiers = () => {
           color={cxlxrs.black}
           style={{ marginBottom: 10 }}
         />
-      ) : hasCashier ? (
+      ) : hasProduct ? (
         <>
           <View style={styles.overview}>
             <View style={styles.overviewMainTextsContainer}>
               <View>
                 <Text style={styles.overviewMainTextLabel}>Total</Text>
                 <Text style={styles.overviewMainTextBold}>
-                  {cashiers.length}
+                  {products.length}
                 </Text>
               </View>
             </View>
@@ -79,9 +78,9 @@ const Cashiers = () => {
           <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.listContainer}>
               <FlatList
-                data={cashiers}
+                data={products}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <CashierPreview data={item} />}
+                renderItem={({ item }) => <ProductPreview data={item} />}
                 refreshControl={
                   <RefreshControl
                     refreshing={isLoading}
@@ -102,38 +101,14 @@ const Cashiers = () => {
           </SafeAreaView>
         </>
       ) : (
-        <View style={styles.noCashier}>
-          <Text style={[styles.noDataText, styles.noCashierText]}>
-            You currently have no cashier.
+        <View style={styles.noProduct}>
+          <Text style={[styles.noDataText, styles.noProductText]}>
+            You currently have no product here.
           </Text>
-          <AppButton
-            onPress={() => navigation.navigate("AddCashier")}
-            title="Add Cashier"
-            customStyle={{
-              backgroundColor: cxlxrs.white,
-              borderRadius: 30,
-              height: 35,
-              width: "40%",
-            }}
-            textStyle={{
-              fontFamily: "FiraCode-Regular",
-              textTransform: "capitalize",
-              fontWeight: "400",
-              fontSize: 12,
-              color: cxlxrs.black,
-            }}
-          />
         </View>
       )}
-      <View style={{ ...styles.buttonContainer }}>
-        <TouchableOpacity onPress={() => navigation.navigate("AddCashier")}>
-          <View style={styles.button}>
-            <Ionicons name="add" size={24} color={cxlxrs.white} />
-          </View>
-        </TouchableOpacity>
-      </View>
     </>
   );
 };
 
-export default Cashiers;
+export default ArchivedProducts;

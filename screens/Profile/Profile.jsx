@@ -4,6 +4,7 @@ import {
   FontAwesome,
   Ionicons,
   MaterialCommunityIcons,
+  MaterialIcons,
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ import SettingsItemWrapper from "../../components/SettingsItemWrapper/SettingsIt
 import { setCurrentUser } from "../../redux/user/actions";
 import { auth } from "../../firebase/config";
 import { Wait } from "../../utils/helper";
+import AppButton from "../../components/AppButton/AppButton";
 
 const Profile = () => {
   const user = useSelector(({ user }) => user.currentUser);
@@ -119,6 +121,26 @@ const Profile = () => {
             </TouchableOpacity>
           </View>
         ) : null}
+        <View style={styles.archiveButtons}>
+          <AppButton
+            onPress={() => navigation.navigate("ArchivedCashiers")}
+            title={"Archived Cashiers"}
+            customStyle={{
+              ...styles.addBtn,
+              backgroundColor: cxlxrs.black,
+            }}
+            textStyle={styles.addBtnText}
+          />
+          <AppButton
+            onPress={() => navigation.navigate("ArchivedProducts")}
+            title="Archived Products"
+            customStyle={{
+              ...styles.addBtn,
+              backgroundColor: cxlxrs.textColor,
+            }}
+            textStyle={styles.addBtnText}
+          />
+        </View>
         <View style={styles.settings}>
           <SettingsItemWrapper
             title={"About Stoque"}
@@ -126,6 +148,11 @@ const Profile = () => {
               <AntDesign name="infocirlceo" size={20} color={cxlxrs.black} />
             }
             onPress={() => navigation.navigate("About")}
+          />
+          <SettingsItemWrapper
+            title={"Shopping List"}
+            icon={<Feather name="list" size={20} color={cxlxrs.black} />}
+            onPress={() => navigation.navigate("ShoppingList")}
           />
           {user.isProfileSetupCompleted ? (
             <SettingsItemWrapper

@@ -12,22 +12,22 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import { firestore } from "../../firebase/config";
-import AppButton from "../../components/AppButton/AppButton";
+import CashierPreview from "../../components/CashierPreview/CashierPreview";
 import { cxlxrs } from "../../constants/Colors";
 
 import { styles } from "./styles";
-import CashierPreview from "../../components/CashierPreview/CashierPreview";
 
-const Cashiers = () => {
+const ArchivedCashiers = () => {
+  let onEndReachedCalledDuringMomentum = false;
   const user = useSelector(({ user }) => user.currentUser);
   const navigation = useNavigation();
   const [hasCashier, setHasCashier] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [cashiers, setCashiers] = useState([]);
   const cashiersRef = firestore
-    .collection("cashiers")
+    .collection("archived_cashiers")
     .doc(`${user.shopId}`)
-    .collection("cashiers");
+    .collection("archived_cashiers");
   const onRefresh = () => {
     setTimeout(() => {
       getCashiers();
@@ -104,36 +104,12 @@ const Cashiers = () => {
       ) : (
         <View style={styles.noCashier}>
           <Text style={[styles.noDataText, styles.noCashierText]}>
-            You currently have no cashier.
+            You currently have no cashier here.
           </Text>
-          <AppButton
-            onPress={() => navigation.navigate("AddCashier")}
-            title="Add Cashier"
-            customStyle={{
-              backgroundColor: cxlxrs.white,
-              borderRadius: 30,
-              height: 35,
-              width: "40%",
-            }}
-            textStyle={{
-              fontFamily: "FiraCode-Regular",
-              textTransform: "capitalize",
-              fontWeight: "400",
-              fontSize: 12,
-              color: cxlxrs.black,
-            }}
-          />
         </View>
       )}
-      <View style={{ ...styles.buttonContainer }}>
-        <TouchableOpacity onPress={() => navigation.navigate("AddCashier")}>
-          <View style={styles.button}>
-            <Ionicons name="add" size={24} color={cxlxrs.white} />
-          </View>
-        </TouchableOpacity>
-      </View>
     </>
   );
 };
 
-export default Cashiers;
+export default ArchivedCashiers;

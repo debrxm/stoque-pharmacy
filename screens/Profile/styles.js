@@ -66,7 +66,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
-    minHeight: 100,
+    minHeight: 90,
   },
   infoLightText: {
     fontSize: 12,
@@ -86,8 +86,26 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  archiveButtons: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+  addBtn: {
+    backgroundColor: cxlxrs.black,
+    borderRadius: 30,
+    height: 40,
+    width: "40%",
+  },
+  addBtnText: {
+    fontFamily: FontFamily.FiraBold,
+    textTransform: "capitalize",
+    fontWeight: "400",
+    fontSize: 10,
+    color: cxlxrs.white,
+  },
   settings: {
-    marginTop: 30,
+    marginTop: 20,
   },
   completeSetup: {
     flexDirection: "row",

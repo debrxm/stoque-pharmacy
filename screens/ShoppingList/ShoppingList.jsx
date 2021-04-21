@@ -2,76 +2,87 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  SafeAreaView,
+  View,
   Text,
   TouchableOpacity,
-  View,
+  FlatList,
+  ActivityIndicator,
+  SafeAreaView,
+  RefreshControl,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { firestore } from "../../firebase/config";
-import AppButton from "../../components/AppButton/AppButton";
 import { cxlxrs } from "../../constants/Colors";
+import { firestore } from "../../firebase/config";
+import ShoppingListPreview from "../../components/ShoppingListPreview/ShoppingListPreview";
 
 import { styles } from "./styles";
-import CashierPreview from "../../components/CashierPreview/CashierPreview";
 
-const Cashiers = () => {
+const ShoppingList = () => {
   const user = useSelector(({ user }) => user.currentUser);
   const navigation = useNavigation();
-  const [hasCashier, setHasCashier] = useState(false);
+  const [hasShoppingList, setHasShoppingList] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [cashiers, setCashiers] = useState([]);
-  const cashiersRef = firestore
-    .collection("cashiers")
+  const [shoppingList, setShoppingList] = useState([]);
+  const shoppingListRef = firestore
+    .collection("shopping_list")
     .doc(`${user.shopId}`)
-    .collection("cashiers");
+    .collection("shopping_list");
   const onRefresh = () => {
     setTimeout(() => {
       getCashiers();
     }, 1000);
   };
-  const getCashiers = async () => {
+  const getShoppingList = async () => {
     setIsLoading(true);
 
-    await cashiersRef.onSnapshot((snapshot) => {
+    await shoppingListRef.onSnapshot((snapshot) => {
       if (!snapshot.empty) {
-        setHasCashier(true);
-        let newCashiers = [];
+        setHasShoppingList(true);
+        let newShoppingList = [];
         for (let i = 0; i < snapshot.docs.length; i++) {
-          newCashiers.push(snapshot.docs[i].data());
+          newShoppingList.push(snapshot.docs[i].data());
         }
-        setCashiers(newCashiers);
+        setShoppingList(newShoppingList);
       }
     });
     setIsLoading(false);
   };
   useEffect(() => {
-    getCashiers();
+    getShoppingList();
   }, [""]);
-
   return (
     <>
       <View style={styles.header}>
-        <Text style={styles.routeTitle}>Cashiers</Text>
-        <View style={{ flexDirection: "row", alignItems: "center" }}></View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", width: 60 }}
+            >
+              <Ionicons
+                name="chevron-back-outline"
+                size={24}
+                color={cxlxrs.black}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.routeTitle}>Shopping List</Text>
       </View>
+
       {isLoading ? (
         <ActivityIndicator
           size="large"
           color={cxlxrs.black}
           style={{ marginBottom: 10 }}
         />
-      ) : hasCashier ? (
+      ) : hasShoppingList ? (
         <>
           <View style={styles.overview}>
             <View style={styles.overviewMainTextsContainer}>
               <View>
                 <Text style={styles.overviewMainTextLabel}>Total</Text>
                 <Text style={styles.overviewMainTextBold}>
-                  {cashiers.length}
+                  {shoppingList.length}
                 </Text>
               </View>
             </View>
@@ -79,9 +90,9 @@ const Cashiers = () => {
           <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.listContainer}>
               <FlatList
-                data={cashiers}
+                data={shoppingList}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <CashierPreview data={item} />}
+                renderItem={({ item }) => <ShoppingListPreview data={item} />}
                 refreshControl={
                   <RefreshControl
                     refreshing={isLoading}
@@ -94,46 +105,19 @@ const Cashiers = () => {
                 style={{ paddingBottom: 20 }}
                 initialNumToRender={15}
                 onEndReachedThreshold={0.1}
-                onMomentumScrollBegin={() => {
-                  onEndReachedCalledDuringMomentum = false;
-                }}
               />
             </View>
           </SafeAreaView>
         </>
       ) : (
-        <View style={styles.noCashier}>
+        <View style={styles.noData}>
           <Text style={[styles.noDataText, styles.noCashierText]}>
-            You currently have no cashier.
+            You currently have no list.
           </Text>
-          <AppButton
-            onPress={() => navigation.navigate("AddCashier")}
-            title="Add Cashier"
-            customStyle={{
-              backgroundColor: cxlxrs.white,
-              borderRadius: 30,
-              height: 35,
-              width: "40%",
-            }}
-            textStyle={{
-              fontFamily: "FiraCode-Regular",
-              textTransform: "capitalize",
-              fontWeight: "400",
-              fontSize: 12,
-              color: cxlxrs.black,
-            }}
-          />
         </View>
       )}
-      <View style={{ ...styles.buttonContainer }}>
-        <TouchableOpacity onPress={() => navigation.navigate("AddCashier")}>
-          <View style={styles.button}>
-            <Ionicons name="add" size={24} color={cxlxrs.white} />
-          </View>
-        </TouchableOpacity>
-      </View>
     </>
   );
 };
 
-export default Cashiers;
+export default ShoppingList;
