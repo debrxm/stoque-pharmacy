@@ -25,7 +25,7 @@ const ArchivedProducts = () => {
   const [products, setProducts] = useState([]);
   const productsRef = firestore
     .collection("archived_products")
-    .doc(`${user.id}`)
+    .doc(`${user.shopId}`)
     .collection("archived_products");
   const onRefresh = () => {
     setTimeout(() => {

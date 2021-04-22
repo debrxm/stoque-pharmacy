@@ -25,7 +25,7 @@ const ShoppingList = () => {
   const [shoppingList, setShoppingList] = useState([]);
   const shoppingListRef = firestore
     .collection("shopping_list")
-    .doc(`${user.shopId}`)
+    .doc(`${user.id}`)
     .collection("shopping_list");
   const onRefresh = () => {
     setTimeout(() => {
