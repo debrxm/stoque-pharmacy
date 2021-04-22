@@ -7,12 +7,7 @@ import { styles } from "./styles";
 
 export default function ShoppingListPreview({
   data,
-  data: {
-    product_name,
-    product_sold_since_last_restock,
-    quantity,
-    notification,
-  },
+  data: { product_name, in_hand, status },
   customStyles,
 }) {
   const navigation = useNavigation();
@@ -28,14 +23,7 @@ export default function ShoppingListPreview({
             style={[
               styles.productIconContainer,
               {
-                borderColor:
-                  notification < quantity
-                    ? cxlxrs.success
-                    : quantity === 0
-                    ? cxlxrs.danger
-                    : cxlxrs.warn,
-                // backgroundColor:
-                //   status === "In Stock" ? cxlxrs.success : cxlxrs.textColor,
+                borderColor: status === "danger" ? cxlxrs.danger : cxlxrs.warn,
               },
             ]}
           >
@@ -50,16 +38,7 @@ export default function ShoppingListPreview({
               {product_name}
             </Text>
             <View style={styles.cardInfoSub}>
-              <Text style={styles.cardInfoSubText}>
-                Sold: {product_sold_since_last_restock}
-              </Text>
-              <Text style={styles.cardInfoSubText}>
-                {notification < quantity
-                  ? `In Stock: ${quantity}`
-                  : quantity === 0
-                  ? `Sold Out`
-                  : `Running Low`}
-              </Text>
+              <Text style={styles.cardInfoSubText}>In Hand {in_hand}</Text>
             </View>
           </View>
           <Ionicons
