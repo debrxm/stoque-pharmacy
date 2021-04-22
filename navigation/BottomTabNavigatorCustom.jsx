@@ -17,6 +17,7 @@ import { isIphoneX } from "react-native-iphone-x-helper";
 import Home from "../screens/Home/Home";
 import Profile from "../screens/Profile/Profile";
 import Notification from "../screens/Notification/Notification";
+import InvoiceView from "../screens/InvoiceView/InvoiceView";
 import EditProfile from "../screens/EditProfile/EditProfile";
 import CompleteSetup from "../screens/CompleteSetup/CompleteSetup";
 import ShopInfo from "../screens/ShopInfo/ShopInfo";
@@ -120,6 +121,9 @@ function getTabBarVisible(route) {
       return false;
       break;
     case "Notification":
+      return false;
+      break;
+    case "InvoiceView":
       return false;
       break;
     case "CompleteSetup":
@@ -288,6 +292,13 @@ function HomeScreenNavigator() {
         }}
       />
       <ScreenStack.Screen
+        name="InvoiceView"
+        component={InvoiceView}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ScreenStack.Screen
         name="Profile"
         component={Profile}
         options={{
@@ -409,6 +420,13 @@ function ReportsScreenNavigator() {
       <ScreenStack.Screen
         name="ReportView"
         component={ReportView}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ScreenStack.Screen
+        name="InvoiceView"
+        component={InvoiceView}
         options={{
           headerShown: false,
         }}

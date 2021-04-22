@@ -23,6 +23,7 @@ import { styles } from "./styles";
 
 const Home = () => {
   const user = useSelector(({ user }) => user.currentUser);
+  const hasNoty = useSelector(({ user }) => user.hasNoty);
   const [filter, setFilter] = useState("thisWeek");
   const [productCount, setProductCount] = useState("0");
   const [cashierCount, setCashierCount] = useState("0");
@@ -52,6 +53,7 @@ const Home = () => {
       setProductCount(snapShot.size);
       setIsProductLoading(false);
     });
+    console.log(hasNoty);
 
     cashiersRef.onSnapshot((snapShot) => {
       setCashierCount(snapShot.size);
@@ -94,6 +96,7 @@ const Home = () => {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
           <View style={styles.noty}>
+            {hasNoty && <View style={styles.notyDot}></View>}
             <Ionicons name="notifications" size={24} color={cxlxrs.black} />
           </View>
         </TouchableOpacity>

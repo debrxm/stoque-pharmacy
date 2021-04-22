@@ -1,49 +1,33 @@
 import { StyleSheet } from "react-native";
 import { cxlxrs } from "../../constants/Colors";
+import { FontFamily } from "../../constants/Fonts";
 export const styles = StyleSheet.create({
-  productCard: {
-    marginHorizontal: 10,
-    position: "relative",
-    backgroundColor: "#ffffff",
-    elevation: 3,
-    borderRadius: 60,
-    padding: 5,
-    position: "relative",
+  container: {
     flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  productIconContainer: {
-    backgroundColor: cxlxrs.black,
-    height: 60,
-    width: 60,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 30,
-    borderWidth: 2,
-  },
-  cardInfo: {
-    paddingLeft: 20,
+    width: "100%",
     flex: 1,
-  },
-  cardInfoSub: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     alignItems: "center",
+    padding: 10,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    backgroundColor: cxlxrs.black,
+    elevation: 3,
   },
-  cardInfoName: {
-    color: cxlxrs.black,
-    fontFamily: "FiraCode-SemiBold",
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: -5,
+  boldText: {
+    fontSize: 13,
+    color: "#ffffff",
+    fontFamily: FontFamily.FiraSemiBold,
   },
-  cardInfoSubText: {
-    marginBottom: -2,
-    color: cxlxrs.textColor,
-    fontFamily: "FiraCode-SemiBold",
-    fontSize: 11,
-    marginVertical: 10,
-    marginRight: 20,
+  lightText: {
+    fontSize: 10,
+    color: cxlxrs.white,
+    fontFamily: FontFamily.FiraRegular,
+    marginVertical: 5,
+  },
+  time: {
+    fontSize: 8,
+    color: cxlxrs.white,
+    fontFamily: FontFamily.FiraRegular,
   },
 });

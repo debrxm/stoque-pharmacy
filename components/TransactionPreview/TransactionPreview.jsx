@@ -16,7 +16,9 @@ export default function TransactionPreview({
   const navigation = useNavigation();
 
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback
+      onPress={() => navigation.navigate("InvoiceView", { data })}
+    >
       <View style={styles.transaction}>
         {paymentMethod === "cash" && (
           <Ionicons

@@ -44,6 +44,16 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
+    position: "relative",
+  },
+  notyDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 20,
+    backgroundColor: cxlxrs.danger,
+    position: "absolute",
+    top: -2,
+    right: 5,
   },
   overviews: {
     padding: 10,

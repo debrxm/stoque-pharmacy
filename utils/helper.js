@@ -12,6 +12,18 @@ export async function SchedulePushNotification() {
     trigger: { seconds: 2 },
   });
 }
+export async function ScheduleReportPushNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Report Ready !!!",
+      body: 'View todays sales report',
+      data: { data: '' },
+    },
+    trigger: { repeats: true, hour:21, minute:12 },
+  });
+} 
+}
+
 
 export async function RegisterForPushNotificationsAsync() {
   let token;

@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  FlatList,
   View,
   Text,
   TouchableOpacity,
@@ -27,12 +28,16 @@ const Notification = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isMoreLoading, setIsMoreLoading] = useState(false);
   const [lastDoc, setLastDoc] = useState(null);
-
+  const onRefresh = () => {
+    setTimeout(() => {
+      getNotifications();
+    }, 1000);
+  };
   const notificationRef = firestore
     .collection("notifications")
     .doc(user.id)
     .collection("notifications")
-    .orderBy("created_at", "desc");
+    .orderBy("created_at");
   const getNotifications = async () => {
     setIsLoading(true);
     notificationRef.limit(20).onSnapshot((snapShot) => {
@@ -40,8 +45,12 @@ const Notification = () => {
         setHasNotification(true);
         let newNotifications = [];
         setLastDoc(snapShot.docs[snapShot.docs.length - 1]);
-        for (let i = 0; i < snapShot.docs.length; i++) {
-          newNotifications.push(snapShot.docs[i].data());
+        for (let index = 0; index < snapShot.docs.length; index++) {
+          const data = {
+            id: snapShot.docs[index].id,
+            ...snapShot.docs[index].data(),
+          };
+          newNotifications.push(data);
         }
         setNotifications(newNotifications);
       } else {
@@ -55,7 +64,6 @@ const Notification = () => {
     if (lastDoc) {
       setIsMoreLoading(true);
       notificationRef
-        .orderBy("created_at")
         .startAfter(lastDoc.data().created_at)
         .limit(10)
         .onSnapshot((snapShot) => {
@@ -64,8 +72,12 @@ const Notification = () => {
 
             setLastDoc(snapShot.docs[snapShot.docs.length - 1]);
 
-            for (let i = 0; i < snapShot.docs.length; i++) {
-              newNotifications.push(snapShot.docs[i].data());
+            for (let index = 0; index < snapShot.docs.length; index++) {
+              const data = {
+                id: snapShot.docs[index].id,
+                ...snapShot.docs[index].data(),
+              };
+              newNotifications.push(data);
             }
 
             setNotifications(newNotifications);
@@ -113,7 +125,7 @@ const Notification = () => {
           <View style={styles.listContainer}>
             <FlatList
               data={notifications}
-              keyExtractor={(item) => item.id.toString()}
+              keyExtractor={(item) => item.title.toString()}
               renderItem={({ item, index }) => (
                 <NotificationPreview
                   data={item}
