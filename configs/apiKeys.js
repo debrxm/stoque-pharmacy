@@ -1,6 +1,6 @@
 export const paystackLiveKeys = {
-  public: "pk_live_ea6e4f22e91f56bc02821f027bb07761b7b819bd",
-  secret: "sk_live_4551c778c1e01c2248911d7b176cb4de7c17477d",
+  public: "pk_live_3c6361bc343804870e28a34df5babac76ce12167",
+  secret: "sk_live_20cf413bd3204a341449253a904ce1f56b853ffed",
 };
 export const paystackTestKeys = {
   public: "pk_test_3211d1f3f7d23a949f1971a99ca99a083d4fc0c5",

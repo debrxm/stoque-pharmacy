@@ -53,7 +53,6 @@ const Home = () => {
       setProductCount(snapShot.size);
       setIsProductLoading(false);
     });
-    console.log(hasNoty);
 
     cashiersRef.onSnapshot((snapShot) => {
       setCashierCount(snapShot.size);

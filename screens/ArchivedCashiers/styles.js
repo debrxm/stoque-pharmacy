@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
   },
   routeTitle: {
     color: cxlxrs.black,
-    fontSize: 16,
+    fontSize: 14,
     letterSpacing: 1,
     fontFamily: FontFamily.FiraMedium,
   },

@@ -12,6 +12,7 @@ export async function SchedulePushNotification() {
     trigger: { seconds: 2 },
   });
 }
+// SchedulePushNotification();
 export async function ScheduleReportPushNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
@@ -156,19 +157,6 @@ export const Wait = (timeout) => {
   });
 };
 
-export const GetExpirationDate = (duration) => {
-  const date = new Date();
-  const month = date.getMonth();
-  date.setMonth(date.getMonth() + duration);
-
-  if (date.getMonth() == month) date.setDate(0);
-  date.setHours(0, 0, 0, 0);
-
-  return {
-    subExpireDate: new Date(date).toISOString().substring(0, 10),
-    subExpireTimestamp: new Date(date).getTime(),
-  };
-};
 export function TimeDifference(date1, date2) {
   let difference = date1.getTime() - date2.getTime();
 
@@ -182,3 +170,26 @@ export function TimeDifference(date1, date2) {
     hours: hoursDifference,
   };
 }
+export const GetExpirationDate = (duration) => {
+  const date = new Date();
+  const month = date.getMonth();
+  date.setMonth(date.getMonth() + duration);
+
+  if (date.getMonth() == month) date.setDate(0);
+  date.setHours(0, 0, 0, 0);
+
+  return {
+    subExpireDate: new Date(date).toISOString().substring(0, 10),
+    subExpireTimestamp: new Date(date).getTime(),
+  };
+};
+
+export const GetNewExpirationDate = (date) => {
+  var result = new Date(date);
+  const today = StartOfToday();
+  const ending = user.subExpireTimestamp;
+  const timeDifferene = TimeDifference(new Date(ending), new Date(today));
+  result.setDate(result.getDate() + timeDifferene);
+  return result;
+};
+c;

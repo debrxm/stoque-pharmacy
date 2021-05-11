@@ -68,6 +68,8 @@ const ProductView = () => {
     .doc(user.id)
     .collection("products")
     .doc(data.id);
+  const allProductsRef = firestore.collection("all_products").doc(data.id);
+  const batch = firestore.batch();
   const restockProduct = async () => {
     if (cost === "" || price === "" || quantity === "" || notification === "") {
       setLoading(false);
@@ -79,8 +81,18 @@ const ProductView = () => {
       setErrorMessage(`Notification must be less than quantity!`);
       return;
     }
+    const restockData = {
+      price,
+      cost,
+      notification,
+      quantity,
+      last_restock_date: Date.now(),
+      last_restock_quantity: quantity - data.quantity,
+      product_sold_since_last_restock: 0,
+    };
+    batch.update(productsRef, restockData).update(allProductsRef, restockData);
     try {
-      await productsRef.update({ price, cost, notification, quantity });
+      await batch.commit();
       setRestocking(false);
       setLoading(false);
     } catch (error) {

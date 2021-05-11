@@ -54,7 +54,7 @@ const ShoppingList = () => {
     <>
       <View style={styles.header}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <View
               style={{ flexDirection: "row", alignItems: "center", width: 60 }}
             >
@@ -66,7 +66,9 @@ const ShoppingList = () => {
             </View>
           </TouchableOpacity>
         </View>
-        <Text style={styles.routeTitle}>Shopping List</Text>
+        <Text style={styles.routeTitle}>
+          ({shoppingList.length}) Shopping List
+        </Text>
       </View>
 
       {isLoading ? (
@@ -77,7 +79,7 @@ const ShoppingList = () => {
         />
       ) : hasShoppingList ? (
         <>
-          <View style={styles.overview}>
+          {/* <View style={styles.overview}>
             <View style={styles.overviewMainTextsContainer}>
               <View>
                 <Text style={styles.overviewMainTextLabel}>Total</Text>
@@ -86,7 +88,7 @@ const ShoppingList = () => {
                 </Text>
               </View>
             </View>
-          </View>
+          </View> */}
           <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.listContainer}>
               <FlatList

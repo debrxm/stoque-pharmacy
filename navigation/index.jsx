@@ -38,6 +38,8 @@ function Navigation({ colorScheme }) {
           notificationRef.onSnapshot(async (snapShot) => {
             if (snapShot.size > 0) {
               dispatch(toggleHasNoty(true));
+            } else {
+              dispatch(toggleHasNoty(false));
             }
           });
         });

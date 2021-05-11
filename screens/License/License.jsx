@@ -27,8 +27,8 @@ const License = () => {
     setTimeLeft(timeDifferene);
   }, [""]);
   const calculateProgress = (today, ending) => {
-    const elapsed = (today / ending) * 100;
-    setProgress(100 - elapsed.toFixed(0));
+    const elapsed = 100 - (today / ending) * 100;
+    setProgress(elapsed.toFixed(1));
   };
   const navigation = useNavigation();
   return (

@@ -43,6 +43,9 @@ const ArchivedProducts = () => {
           newProducts.push(snapshot.docs[i].data());
         }
         setProducts(newProducts);
+      } else {
+        setHasProduct(false);
+        setProducts([]);
       }
     });
     setIsLoading(false);
@@ -54,8 +57,22 @@ const ArchivedProducts = () => {
   return (
     <>
       <View style={styles.header}>
-        <Text style={styles.routeTitle}>Products</Text>
-        <View style={{ flexDirection: "row", alignItems: "center" }}></View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", width: 60 }}
+            >
+              <Ionicons
+                name="chevron-back-outline"
+                size={24}
+                color={cxlxrs.black}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.routeTitle}>
+          ({products.length}) Product{products.length > 1 && s}
+        </Text>
       </View>
       {isLoading ? (
         <ActivityIndicator
@@ -65,22 +82,14 @@ const ArchivedProducts = () => {
         />
       ) : hasProduct ? (
         <>
-          <View style={styles.overview}>
-            <View style={styles.overviewMainTextsContainer}>
-              <View>
-                <Text style={styles.overviewMainTextLabel}>Total</Text>
-                <Text style={styles.overviewMainTextBold}>
-                  {products.length}
-                </Text>
-              </View>
-            </View>
-          </View>
           <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.listContainer}>
               <FlatList
                 data={products}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <ProductPreview data={item} />}
+                renderItem={({ item }) => (
+                  <ProductPreview data={item} unArchive />
+                )}
                 refreshControl={
                   <RefreshControl
                     refreshing={isLoading}

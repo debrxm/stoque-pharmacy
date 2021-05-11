@@ -23,4 +23,17 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     letterSpacing: 1,
   },
+  noData: {
+    alignItems: "center",
+    minHeight: 100,
+    marginVertical: 20,
+  },
+  noDataText: {
+    textAlign: "center",
+    fontSize: 13,
+    color: "#97989A",
+    marginVertical: 20,
+    fontFamily: "FiraCode-Regular",
+    letterSpacing: 0.5,
+  },
 });

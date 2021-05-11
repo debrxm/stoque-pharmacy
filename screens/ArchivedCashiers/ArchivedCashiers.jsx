@@ -44,6 +44,9 @@ const ArchivedCashiers = () => {
           newCashiers.push(snapshot.docs[i].data());
         }
         setCashiers(newCashiers);
+      } else {
+        setHasCashier(false);
+        setCashiers([]);
       }
     });
     setIsLoading(false);
@@ -55,8 +58,22 @@ const ArchivedCashiers = () => {
   return (
     <>
       <View style={styles.header}>
-        <Text style={styles.routeTitle}>Cashiers</Text>
-        <View style={{ flexDirection: "row", alignItems: "center" }}></View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", width: 60 }}
+            >
+              <Ionicons
+                name="chevron-back-outline"
+                size={24}
+                color={cxlxrs.black}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.routeTitle}>
+          ({cashiers.length}) Cashier{cashiers.length > 1 && s}
+        </Text>
       </View>
       {isLoading ? (
         <ActivityIndicator
@@ -66,7 +83,7 @@ const ArchivedCashiers = () => {
         />
       ) : hasCashier ? (
         <>
-          <View style={styles.overview}>
+          {/* <View style={styles.overview}>
             <View style={styles.overviewMainTextsContainer}>
               <View>
                 <Text style={styles.overviewMainTextLabel}>Total</Text>
@@ -75,13 +92,15 @@ const ArchivedCashiers = () => {
                 </Text>
               </View>
             </View>
-          </View>
+          </View> */}
           <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.listContainer}>
               <FlatList
                 data={cashiers}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <CashierPreview data={item} />}
+                renderItem={({ item }) => (
+                  <CashierPreview data={item} unArchive />
+                )}
                 refreshControl={
                   <RefreshControl
                     refreshing={isLoading}

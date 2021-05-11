@@ -46,4 +46,10 @@ export const styles = StyleSheet.create({
     marginVertical: 10,
     marginRight: 20,
   },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

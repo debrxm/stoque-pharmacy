@@ -2,7 +2,9 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 import { cxlxrs } from "../../constants/Colors";
+import { UnArchiveProduct } from "../../firebase/firestore";
 import { styles } from "./styles";
 
 export default function ProductPreview({
@@ -14,14 +16,20 @@ export default function ProductPreview({
     notification,
   },
   customStyles,
+  unArchive,
 }) {
+  const user = useSelector(({ user }) => user.currentUser);
   const navigation = useNavigation();
 
+  const UnArchive = () => {
+    UnArchiveProduct(data, user.shopId);
+  };
+
   const onPress = () => {
-    navigation.navigate("ProductView", { data });
+    !unArchive && navigation.navigate("ProductView", { data });
   };
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity activeOpacity={unArchive ? 1 : 0.6} onPress={onPress}>
       <>
         <View style={[styles.productCard, { ...customStyles }]}>
           <View
@@ -62,12 +70,19 @@ export default function ProductPreview({
               </Text>
             </View>
           </View>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={24}
-            color={cxlxrs.black}
-            style={{ marginLeft: "auto", marginRight: 5 }}
-          />
+
+          {unArchive ? (
+            <TouchableOpacity style={styles.iconContainer} onPress={UnArchive}>
+              <MaterialIcons name="unarchive" size={28} color="black" />
+            </TouchableOpacity>
+          ) : (
+            <Ionicons
+              name="chevron-forward-outline"
+              size={24}
+              color={cxlxrs.black}
+              style={{ marginLeft: "auto", marginRight: 5 }}
+            />
+          )}
         </View>
       </>
     </TouchableOpacity>

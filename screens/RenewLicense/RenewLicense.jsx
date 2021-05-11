@@ -18,6 +18,7 @@ const RenewLicense = ({ type, canClose }) => {
   const navigation = useNavigation();
   const onSelectDuration = (category) => {
     // const expirationDate = GetExpirationDate(category || 0);
+    console.log(category);
     category && setExpireDate(GetExpirationDate(category));
     if (category === 1) {
       setAmount(2500);

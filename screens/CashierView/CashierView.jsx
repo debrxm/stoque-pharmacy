@@ -83,7 +83,7 @@ const AddCashier = () => {
   const onDelete = () => {
     setActionType("delete");
     isAuthentic
-      ? OnDeleteCashier(data.id, user.shopId)
+      ? OnDeleteCashier(data.id, user.shopId, navigation)
       : setDialogVisible(true);
   };
   async function checkIfCashierNumberMatch() {

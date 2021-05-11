@@ -188,7 +188,7 @@ function ChartDisplay({ count, duration }) {
           letterSpacing: 2,
         }}
       >
-        {`Product${count > 1 && "s"} already sold this ${duration}`}
+        {`Product${count > 1 ? "s" : ""} already sold this ${duration}`}
       </Text>
     </View>
   );

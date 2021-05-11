@@ -86,13 +86,31 @@ export const OnArchiveCashier = async (data, shopId, navigation) => {
     );
   }
 };
-export const OnDeleteCashier = async (id, shopId) => {
+export const UnArchiveCashier = async (data, shopId) => {
+  const batch = firestore.batch();
+  const { id } = data;
+  const cashierRef = firestore.doc(`cashiers/${shopId}/cashiers/${id}`);
+  const archiveRef = firestore.doc(
+    `archived_cashiers/${shopId}/archived_cashiers/${id}`
+  );
+  batch.set(cashierRef, data).delete(archiveRef);
+  try {
+    await batch.commit();
+  } catch (error) {
+    console.log(
+      "An error occured while trying to archive cashier",
+      error.message
+    );
+  }
+};
+export const OnDeleteCashier = async (id, shopId, navigation) => {
   const batch = firestore.batch();
   const cashierRef = firestore.doc(`cashiers/${shopId}/cashiers/${id}`);
   const cashierStatsRef = firestore.doc(`cashier_stats/${id}`);
   batch.delete(cashierRef).delete(cashierStatsRef);
   try {
     await batch.commit();
+    navigation.goBack();
   } catch (error) {
     console.log(
       "An error occured while trying to delete cashier",

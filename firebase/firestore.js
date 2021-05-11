@@ -87,6 +87,27 @@ export const OnArchiveProduct = async (data, ownerId, navigation) => {
     );
   }
 };
+export const UnArchiveProduct = async (data, ownerId) => {
+  const batch = firestore.batch();
+  const { id } = data;
+  const productRef = firestore.doc(`products/${ownerId}/products/${id}`);
+  const allProductRef = firestore.doc(`all_products/${id}`);
+  const archiveRef = firestore.doc(
+    `archived_products/${ownerId}/archived_products/${id}`
+  );
+  batch
+    .set(productRef, data)
+    .set(allProductRef, data)
+    .delete(archiveRef);
+  try {
+    await batch.commit();
+  } catch (error) {
+    console.log(
+      "An error occured while trying to archive product",
+      error.message
+    );
+  }
+};
 export const OnDeleteProduct = async (id, ownerId) => {
   const batch = firestore.batch();
   const productRef = firestore.doc(`products/${ownerId}/products/${id}`);

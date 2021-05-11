@@ -16,6 +16,7 @@ import NotificationPreview from "../../components/NotificationPreview/Notificati
 
 import { styles } from "./styles";
 import { useSelector } from "react-redux";
+import NotificationViewer from "../../components/NotificationViewer/NotificationViewer";
 
 const Notification = () => {
   let onEndReachedCalledDuringMomentum = false;
@@ -23,10 +24,12 @@ const Notification = () => {
   const navigation = useNavigation();
   const [hasNotification, setHasNotification] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [notyVisible, setNotyVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isMoreLoading, setIsMoreLoading] = useState(false);
+  const [notificationDate, setNotificationDate] = useState({});
   const [lastDoc, setLastDoc] = useState(null);
   const onRefresh = () => {
     setTimeout(() => {
@@ -37,7 +40,7 @@ const Notification = () => {
     .collection("notifications")
     .doc(user.id)
     .collection("notifications")
-    .orderBy("created_at");
+    .orderBy("created_at", "desc");
   const getNotifications = async () => {
     setIsLoading(true);
     notificationRef.limit(20).onSnapshot((snapShot) => {
@@ -125,9 +128,11 @@ const Notification = () => {
           <View style={styles.listContainer}>
             <FlatList
               data={notifications}
-              keyExtractor={(item) => item.title.toString()}
+              keyExtractor={(item) => item.id.toString()}
               renderItem={({ item, index }) => (
                 <NotificationPreview
+                  setNotificationDate={setNotificationDate}
+                  setNotyVisible={setNotyVisible}
                   data={item}
                   customStyles={
                     index === notifications.length - 1 && { marginBottom: 60 }
@@ -158,12 +163,17 @@ const Notification = () => {
           </View>
         </SafeAreaView>
       ) : (
-        <View style={styles.noProduct}>
+        <View style={styles.noData}>
           <Text style={[styles.noDataText, styles.noProductText]}>
             You currently have no notification.
           </Text>
         </View>
       )}
+      <NotificationViewer
+        notyVisible={notyVisible}
+        setNotyVisible={setNotyVisible}
+        data={notificationDate}
+      />
     </>
   );
 };

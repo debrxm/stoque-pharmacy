@@ -12,11 +12,9 @@ export default function ShoppingListPreview({
 }) {
   const navigation = useNavigation();
 
-  const onPress = () => {
-    navigation.navigate("ProductView", { data });
-  };
+  const onPress = () => {};
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
       <>
         <View style={[styles.productCard, { ...customStyles }]}>
           <View
@@ -41,12 +39,14 @@ export default function ShoppingListPreview({
               <Text style={styles.cardInfoSubText}>In Hand {in_hand}</Text>
             </View>
           </View>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={24}
-            color={cxlxrs.black}
-            style={{ marginLeft: "auto", marginRight: 5 }}
-          />
+          <TouchableOpacity style={styles.iconContainer} onPress={() => {}}>
+            <MaterialIcons
+              name="settings-backup-restore"
+              size={28}
+              color={cxlxrs.black}
+              style={{ marginLeft: "auto", marginRight: 5 }}
+            />
+          </TouchableOpacity>
         </View>
       </>
     </TouchableOpacity>

@@ -197,7 +197,7 @@ const InvoiceView = () => {
         </View>
       </ScrollView>
       <View style={{ ...styles.buttonContainer }}>
-        <TouchableOpacity onPress={() => navigation.navigate("AddCategory")}>
+        <TouchableOpacity onPress={() => {}}>
           <View
             style={[
               styles.button,

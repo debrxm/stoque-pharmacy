@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import PaystackWebView from "react-native-paystack-webview";
-import { paystackTestKeys } from "../../configs/apiKeys";
+import { paystackLiveKeys } from "../../configs/apiKeys";
 import { useDispatch, useSelector } from "react-redux";
 import AppButton from "../AppButton/AppButton";
 const uuid = require("react-native-uuid");
@@ -24,7 +24,6 @@ const PayWithPaystack = ({ amount, expireDate, label, disabled, message }) => {
         message,
         token: user.notificationToken,
       });
-      // `Transaction completed, wallet has been credited with ${amount}`
     } catch (err) {
       // "Ooops an error occured wallet no funded" + " " + err,
     }
@@ -34,9 +33,9 @@ const PayWithPaystack = ({ amount, expireDate, label, disabled, message }) => {
     <>
       <PaystackWebView
         showPayButton={false}
-        paystackKey={paystackTestKeys.public}
+        paystackKey={paystackLiveKeys.public}
         amount={amount || 500000}
-        billingEmail="payment@boundlessservicesng.com"
+        billingEmail="payment@stoque.com"
         billingMobile="09787377462"
         billingName="Boundless Investment"
         ActivityIndicatorColor="green"
